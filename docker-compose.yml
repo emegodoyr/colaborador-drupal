@@ -33,3 +33,11 @@ services:
       - MYSQL_ALLOW_EMPTY_PASSWORD=no
     ports:
       - "3306:3306"
+
+  backup:
+      image: confirm/mysql-backup
+      volumes:
+          - ./data/backup:/backup
+      links:
+          - database:my-mysql
+      restart: never
