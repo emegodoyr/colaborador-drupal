@@ -1,0 +1,5 @@
+;$Id$
+name = Mallas
+description = Módulo de Mallas
+package = DL
+core = "7.x"

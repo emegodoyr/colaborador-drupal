@@ -1,0 +1,670 @@
+<?php
+
+function mallas_menu() {
+
+    $items = array();
+
+    $items['malla/vermalla'] = array(
+        'page callback' => 'mallas_malla',
+        'access arguments' => array('access content'),
+        'access callback' => 'user_is_logged_in',
+        'menu_name' => 'menu-principal',
+        'type' => MENU_CALLBACK
+    );
+	
+	$items['malla'] = array(
+        'page callback' => 'malla_mismallas',
+        'access arguments' => array('access content'),
+        'access callback' => 'user_is_logged_in',
+        'menu_name' => 'menu-principal',
+        'type' => MENU_CALLBACK
+    );
+	
+    return $items;
+}
+
+function malla_mismallas() {
+	drupal_add_js(drupal_get_path('module', 'mallas') . '/js/datatables-custom.js');
+	$idPersona = mallas_getIdPersona();
+	$idSociedad = mallas_getIdSociedad();
+	
+	$parametros = array(
+		'IdSociedad' => $idSociedad,
+        'IdColaborador' => $idPersona,
+    );
+	
+	$xml = esb_connector_execute_service('DS_Mallas', 'getMallasPersona', $parametros);
+	
+	$attributes['datatable_options'] = array(
+		'bFilter'		=> FALSE,
+		'bInfo'     	=> TRUE,
+		'language' 		=> array('url'=>'/sites/all/modules/datatables/dataTables/media/js/dataTables.spanish.js'),
+		'responsive'	=> TRUE,
+		'aoColumnsDef' 	=> array('bSortable'=>FALSE,'aTargets'=>array('no-sort')),
+		'aaSorting' 	=> array()
+	);
+	
+	// Define table columns
+	$header = array(
+		/*array
+		(
+			'data' => t(''),
+			'datatable_options' => array(
+				'bSortable' => FALSE,
+				'bSearchable' => FALSE,
+			),
+		),
+		array
+		(
+			'data' => t(''),
+			'datatable_options' => array(
+				'bSortable' => FALSE,
+				'bSearchable' => FALSE,
+			),
+		),*/
+		array
+		(
+			'data' => t(''),
+			'datatable_options' => array(
+				'bSortable' => FALSE,
+				'bSearchable' => FALSE,
+			),
+		),
+		array
+		(
+			'data' => t('Nombre'),
+			'datatable_options' => array(
+				'bSortable' => TRUE,
+				'bSearchable' => TRUE,
+			),
+		),
+		array
+		(
+			'data' => t('% Avance'),
+			'datatable_options' => array(
+				'bSortable' => TRUE,
+				'bSearchable' => TRUE,
+			),
+		),
+		array
+		(
+			'data' => t('Cant.UC'),
+			'datatable_options' => array(
+				'bSortable' => TRUE,
+				'bSearchable' => TRUE,
+			),
+		),
+		array
+		(
+			'data' => t('Completas'),
+			'datatable_options' => array(
+				'bSortable' => TRUE,
+				'bSearchable' => TRUE,
+			),
+		),
+		array
+		(
+			'data' => t('NoCompletas'),
+			'datatable_options' => array(
+				'bSortable' => TRUE,
+				'bSearchable' => TRUE,
+			),
+		),
+		array
+		(
+			'data' => t('Asignación'),
+			'datatable_options' => array(
+				'bSortable' => TRUE,
+				'bSearchable' => TRUE,
+			),
+		),
+		  
+	);	
+	
+	// Table data.
+	$rows = array();
+
+	foreach ($xml->Entries->Entry as $entry) {
+/*		$row = array(			
+			'<a href="#" title="Ver Diagrama"><span class="icon-diagram viewstruct"></span></a>',
+			'<a href="#" title="Ver Listado"><span class="glyphicon glyphicon-th-list viewlistado"></span></a>',
+			'<a href="/malla/vermalla?malla='.$entry->IdVersionMalla.'" title="Ver Miniaturas"><span class="glyphicon glyphicon-th viewminiatura"></span></a>',
+			$entry->NombreMalla,
+			$entry->PorcentajeAvance,
+			$entry->CantidadUnidadesCurriculares,
+			$entry->UnidadesCompletadas,
+			$entry->UnidadesPendientes,
+			$entry->FechaInscripcion
+		);		
+*/		
+		$row = array(						
+			'<a href="/colaborador/malla/vermalla?malla='.$entry->IdVersionMalla.'" title="Ver Miniaturas"><span class="glyphicon glyphicon-th viewminiatura"></span></a>',
+			$entry->NombreMalla,
+			$entry->PorcentajeAvance,
+			$entry->CantidadUnidadesCurriculares,
+			$entry->UnidadesCompletadas,
+			$entry->UnidadesPendientes,
+			$entry->FechaInscripcion
+		);		
+		array_push($rows, $row);		
+	}	
+	 
+	// Or, render using a theme function.
+	$variables = array(
+	  'attributes' => $attributes,
+	  'header' => $header,
+	  'rows' => $rows,
+	);
+	$datatable = theme('datatable', $variables);
+	
+	
+	//contenido global
+	$form['content']=array(
+		'#type' => 'container',
+		'#attributes' => array(
+			'class'=> array('row malla-drupal mallas')
+		)				   
+	);
+	
+	//panel
+	$form['content']['panel']=array(
+		'#type' => 'container',
+		'#attributes' => array(
+			'class'=> array('panel panel-default panel-page-content')
+		)				   
+	);
+	
+		//header del panel
+		$form['content']['panel']['header']=array(
+			'#type' => 'container',
+			'#attributes' => array(
+				'class'=> array('panel-heading')
+			)
+		);
+	
+			$form['content']['panel']['header']['titulo']=array(
+				'#markup' => 'Mis Mallas'
+			);
+		
+		//body del panel
+		$form['content']['panel']['body']=array(
+			'#type' => 'container',
+			'#attributes' => array(
+				'class'=> array('panel-body')
+			)		
+		);
+			
+			//contenedor de la tabla
+			$form['content']['panel']['body']['content']=array(
+				'#type' => 'container',
+				'#attributes' => array(
+					'class'=> array('tabla-resultados-no-registros-buscar')
+				)				   
+			);
+	
+				//tabla
+				$form['content']['panel']['body']['content']['tabla']=array(
+					'#markup' => $datatable
+				);
+	return $form;
+}
+
+function mallas_malla() {
+    $resultado = '';
+	
+	if(isset($_GET['malla']))
+	{
+		$idMalla = $_GET['malla'];
+		$idPersona = mallas_getIdPersona();
+		$idSociedad = mallas_getIdSociedad();
+
+		$parametros = array(
+			'IdSociedad' => $idSociedad,
+			'IdColaborador' => $idPersona,
+			'IdVersionMalla' => $idMalla,
+		);
+		
+		$xml = esb_connector_execute_service('DS_Mallas', 'getSeccionesPersona', $parametros);
+
+		
+		$parametros2 = array(
+		'IdSociedad' => $idSociedad,
+        'IdColaborador' => $idPersona,
+		'IdVersionMalla' => $idMalla
+		);
+		
+		$xml2 = esb_connector_execute_service('DS_Mallas', 'getResumenMalla', $parametros2);
+		//echo $xml2;
+		$nombreMalla = "Malla";
+		$porcentajeAvance = "0";
+		$cantidadUC = "";
+		$cantidadSecciones = "";
+		$estado = "";
+		foreach ($xml2->Entries->Entry as $entry) {
+			$nombreMalla = $entry->NombreMalla;
+			$porcentajeAvance = $entry->PorcentajeAvance;
+			$cantidadUC = $entry->CantidadUnidadesCurriculares;
+			$cantidadSecciones = count($xml->Entries->Entry);
+			
+			if($entry->CantidadUnidadesCurriculares > UnidadesCompletadas)
+			{
+				$estado = "Completa";
+			}
+			else{
+				$estado = "Incompleta";
+			}
+		}
+
+		$form['content'] = create_container('row malla-drupal mallas');			
+		$form['content']['panel'] = create_container('panel panel-default panel-page-content');				
+		$form['content']['panel']['header'] = create_container('panel-heading');							
+		$form['content']['panel']['header']['titulo']=array('#markup' => $nombreMalla.' ');
+		//$form['content']['panel']['header']['titulo']=array('#markup' => $nombreMalla.' <div class="pull-right"> <a class="btn btn-link btn-xs"><span class="glyphicon glyphicon-print"></span> Exportar a PDF</a> <a class="btn btn-link  btn-xs" href="#" data-toggle="modal" data-target="#myModal"><span class="icon icon-diagram"></span> Diagrama</a> <a class="btn btn-link btn-xs" href="#"><span class="glyphicon glyphicon-th-list"></span> Listado</a> <a class="btn btn-link btn-xs" href="#"><span class="glyphicon glyphicon-th "></span> Miniaturas</a> </div>');
+		$form['content']['panel']['body'] = create_container('panel-body');									
+		$form['content']['panel']['body']['head-mallas'] = create_container('col-md-12 head-mallas');									
+		$form['content']['panel']['body']['head-mallas']['head-col1'] = create_container('col-md-3 no-padding-left head-col');
+		$form['content']['panel']['body']['head-mallas']['head-col1']['row1'] = create_container('row');
+		$form['content']['panel']['body']['head-mallas']['head-col1']['row1']['estado'] = create_container('col-sm-3');
+		$form['content']['panel']['body']['head-mallas']['head-col1']['row1']['estado']['contenido']=array('#markup' => 'Estado');
+		$form['content']['panel']['body']['head-mallas']['head-col1']['row1']['resultado'] = create_container('col-sm-8');
+		$form['content']['panel']['body']['head-mallas']['head-col1']['row1']['resultado']['contenido']=array('#markup' => $estado);
+		$form['content']['panel']['body']['head-mallas']['head-col1']['row2'] = create_container('row');
+		$form['content']['panel']['body']['head-mallas']['head-col1']['row2']['avance'] = create_container('col-sm-3');
+		$form['content']['panel']['body']['head-mallas']['head-col1']['row2']['avance']['contenido']=array('#markup' => 'Avance');
+		$form['content']['panel']['body']['head-mallas']['head-col1']['row2']['progreso'] = create_container('col-sm-8');
+		$form['content']['panel']['body']['head-mallas']['head-col1']['row2']['progreso']['progress'] = create_container('progress');
+		$form['content']['panel']['body']['head-mallas']['head-col1']['row2']['progreso']['progress']['contenido']=array('#markup' => '<div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="'.$porcentajeAvance.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$porcentajeAvance.'%"> '.$porcentajeAvance.'% </div>');
+		$form['content']['panel']['body']['head-mallas']['head-col2'] = create_container('col-md-4 head-col');
+		$form['content']['panel']['body']['head-mallas']['head-col2']['row1'] = create_container('row');
+		$form['content']['panel']['body']['head-mallas']['head-col2']['row1']['secciones'] = create_container('col-sm-9');
+		$form['content']['panel']['body']['head-mallas']['head-col2']['row1']['secciones']['contenido'] = array('#markup' => 'Nº de Secciones');
+		$form['content']['panel']['body']['head-mallas']['head-col2']['row1']['valor'] = create_container('col-sm-3');
+		$form['content']['panel']['body']['head-mallas']['head-col2']['row1']['valor']['contenido'] = array('#markup' => $cantidadSecciones);
+		$form['content']['panel']['body']['head-mallas']['head-col2']['row2'] = create_container('row');
+		$form['content']['panel']['body']['head-mallas']['head-col2']['row2']['unidadesCurriculares']= create_container('col-sm-9 no-padding-right');
+		$form['content']['panel']['body']['head-mallas']['head-col2']['row2']['unidadesCurriculares']['cotenido']= array('#markup' => 'Nº de Unidades Curriculares');
+		$form['content']['panel']['body']['head-mallas']['head-col2']['row2']['valor']= create_container('col-sm-3');
+		$form['content']['panel']['body']['head-mallas']['head-col2']['row2']['valor']['cotenido']= array('#markup' => $cantidadUC);
+		$form['content']['panel']['body']['head-mallas']['head-col3'] = create_container('col-md-5 head-col last');
+		$form['content']['panel']['body']['head-mallas']['head-col3']['contenido'] = array('#markup' => '<form class="form-inline pull-right" role="form"></form>');
+		//$form['content']['panel']['body']['head-mallas']['head-col3']['contenido'] = array('#markup' => '<form class="form-inline pull-right" role="form"><select class="form-control input-sm" size="1" name="txtdrop2"><option>Seleccionar otra malla</option><option>Malla Ejecutivo de Pequeña Empresa</option></select></form>');
+		$form['content']['panel']['body']['simbologia'] = create_container('simbologia');
+		$form['content']['panel']['body']['simbologia']['contenido'] = array('#markup' => '<a href="#" data-toggle="modal" data-target="#myModal"><span><i class="fa fa-question-circle"></i> Simbología</span></a>');
+		$form['content']['panel']['body']['listadoeventos'] = array('#markup' => esb_connector_getSecciones($xml));
+					
+		$form['content']['panel']['body']['panelsimbologia'] = array('#markup' => '<!-- Modal Simbologia-->
+			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			  <div class="modal-dialog" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel">Simbología de Capacitación</h4>
+				  </div>
+				  <div class="modal-body"> 
+						<div class="simbologia table-responsive">
+                        <table class="table table-condensed">
+                            <tbody><tr>
+                                <th width="60">Símbolo</th>
+                                <th width="150">&nbsp;</th>
+                                <th>Que significa</th>
+                            </tr>
+                            <tr>
+                                <td><span title="Reprobada" class="estado-rectangulo estado-rojo"></span> <span title="Reprobada" class="estado-circulo estado-rojo"></span></td>
+                                <td>Reprobada</td>
+                                <td>Situación final reprobada. No cumple con los requisitos para aprobar la capacitación</td>
+                            </tr>
+                            <tr>
+                                <td><span title="Aprobada" class="estado-rectangulo estado-verde"></span> <span title="Completada" class="estado-circulo estado-verde"></span></td>
+                                <td>Aprobada</td>
+                                <td>Situación final aprobada. Cumplió con los requisitos para aprobar la capacitación</td>
+                            </tr>
+                            <tr>
+                                <td><span title="No disponible" class="estado-rectangulo estado-gris"></span><span title="No disponible" class="estado-circulo estado-gris"></span></td>
+                                <td>No disponible</td>
+                                <td>No tiene disponible una situación final</td>
+                            </tr>
+                            <tr>
+                                <td>N/D</td>
+                                <td>No disponible</td>
+                                <td>No ha iniciado o no tiene disponible una capacitación </td>
+                            </tr>
+                            <tr>
+                                <td><span title="Completada" class="estado-circulo estado-azul"></span></td>
+                                <td>Completada</td>
+                                <td>Se completo una capacitación</td>
+                            </tr>
+                            <tr>
+                                <td><span title="En progreso" class="estado-circulo estado-amarillo"></span></td>
+                                <td>En progreso</td>
+                                <td>Evento e-learning comenzado y en periodo vigente</td>
+                            </tr>
+                            <tr>
+                                <td><span title="No iniciado" class="estado-circulo estado-blanco"></span></td>
+                                <td>No iniciado</td>
+                                <td>Evento disponible no iniciado</td>
+                            </tr>
+                            <tr>
+                                <td><i title="Evento presencial" class="icon icon-user icon-read"></i></td>
+                                <td>Evento presencial</td>
+                                <td>Actividad de capacitación que se realiza en un  lugar físico definido. Se requiere la asistencia del alumno tanto a las lecciones  como a las evaluaciones</td>
+                            </tr>
+                            <tr>
+                                <td><i title="Evento e-learning" class="fa fa-laptop" style="color:#aaa"></i></td>
+                                <td>Evento e-learning</td>
+                                <td><p>Actividad de capacitación a la  que se accede a través de plataforma web. Tanto las lecciones como evaluaciones  se realizan a través de la plataforma, por lo que no requiere la presencia  física del alumno</p></td>
+                            </tr>
+                            <tr>
+                                <td><i title="Evento a distancia" class="icon icon-book-open icon-read"></i></td>
+                                <td>Evento a distancia</td>
+                                <td><p>Actividad de capacitación&nbsp;que no requiere asistencia presencial ni interacción con la plataforma e-learning, sino que las lecciones y evaluaciones son realizadas por medio de la entrega de un  CD-ROM, documento físico u otro medio que no considere uso de Internet. </p></td>
+                            </tr>
+                            <tr>
+                                <td><i title="Nota" class="icon icon-nota icon-read"></i>&nbsp;</td>
+                                <td>Nota de la capacitación</td>
+                                <td>Resultado. N/D corresponde a nota no disponible, que no tiene nota, o, en evento e-learning, que el contenido no es evaluable.</td>
+                            </tr>
+                            <tr>
+                                <td><i title="Diploma" class="icon icon-certificate icon-link"></i></td>
+                                <td>Diploma del evento</td>
+                                <td>Documento que certifica la aprobación del evento</td>
+                            </tr>
+                            <tr>
+                                <td><i title="Detalle" class="icon icon-info" style="color:#0099ff"></i></td>
+                                <td>Detalle</td>
+                                <td>Especificaciones de unidad curricular o del evento</td>
+                            </tr>
+                        </tbody></table>
+                    </div>
+				  </div>
+				  
+				   <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+						</div>
+				   </div>
+			  </div>
+			</div>
+    <!--/modal-->');								
+		
+	}
+	else{
+		$resultado = "No se ha encontrado malla.";
+	}
+    return $form;	
+}
+
+function esb_connector_getSecciones($xmlSecciones) {
+
+	$contador = 0;
+    $registros='';
+    foreach ($xmlSecciones->Entries->Entry as $entry) {
+		$contador++;
+        $registros .= '
+		<div class="seccion seccion2 col-sm-12 no-padding-left no-padding-right" style="background-color: ' . $entry->Color . '">
+			<div class="col-sm-2 tit-seccion-mallas">'. $entry->Seccion .'</div>
+			<div class="col-sm-10 no-padding-right no-padding-left seccion-content"> 
+			  <!--carousel-->
+			  <div id="carousel-example-generic'.$contador.'" '. $entry->IdVersionSeccion .' class="carousel slide"> 
+				<!-- Indicators --> 
+				
+				<!-- Wrapper for slides -->
+				<div class="carousel-inner">';
+		
+		$registros .= esb_connector_getEventosPorSeccion($entry->IdVersionSeccion);
+		
+
+				
+		$registros .= '		  
+				</div>
+				<!-- Controls --> 
+				<a class="left carousel-control" href="#carousel-example-generic'.$contador.'" '. $entry->IdVersionSeccion .' data-slide="prev"> 
+				<span class="icon-prev"></span> </a> <a class="right carousel-control" '. $entry->IdVersionSeccion .' href="#carousel-example-generic'.$contador.'" data-slide="next"> <span class="icon-next"></span> </a> </div>
+			  <!--fin carousel--> 
+			</div>
+		  </div>
+		  <div class="clearfix"></div>';
+		  
+    }
+    return $registros;
+}
+
+
+// 
+//GetEventosPorSeccion:
+// 
+function esb_connector_getEventosPorSeccion($pIdSeccion) {
+	
+	$idPersona = mallas_getIdPersona();
+	
+	$parametros = array(
+		'IdSeccionVersion' => $pIdSeccion,
+		'IdColaborador' => $idPersona
+    );
+    
+	$xml = esb_connector_execute_service('DS_Mallas', 'getSeccionMalla', $parametros);
+echo $xml;
+	$contador = 0;
+	$classActive = "active";
+	
+    $registros='';
+    foreach ($xml->Entries->Entry as $entry) {
+		
+		$contador++;
+		if(($contador -1) % 4 == 0) //Se ejecuta cada cuatro iteraciones
+		{
+			$registros .= '
+			<!-- Slide -->
+			<div class="item '.$classActive.'">
+				<div class="row" >';
+
+			$classActive = "";
+		}
+		
+		$registros .= mallas_pintar_uc($entry);
+		
+		if($contador % 4 == 0 || $contador == count($xml->Entries->Entry)) //se cierra la seccion Si es multiplo de 4 o es el ultimo elemento 
+		{
+			$registros .= '
+				</div>
+			</div>';			
+		}
+	}      
+    return $registros;
+}
+
+function mallas_pintar_uc($uc)
+{
+	$unidadCurricular = ucfirst(strtolower($uc->UnidadCurricular));
+	
+	if(strlen($unidadCurricular) > 20)
+	{
+		$unidadCurricularRecortada = substr($unidadCurricular, 0, strrpos(substr($unidadCurricular, 0, 20), ' '));
+	}
+	else
+	{
+		$unidadCurricularRecortada = $unidadCurricular;
+	}	
+	
+	$codigoErp = $uc->CodigoErp;	
+	$imagen = $uc->ImagenUnidad;
+	$idEvento = $uc->IdEvento;
+	$idColaborador = $uc->IdColaborador;
+	
+	$evento = "";
+	
+	//Verificamos si la UC tiene un evento asociado
+	$tieneEvento = false;
+	if($idEvento != 0)
+	{
+		$tieneEvento = true;
+		$evento = $uc->Evento;
+	}
+	
+	$situacionFinalClase = "";
+	
+	$estaAprobado = false;
+	//Obtenemos los datos del evento solo si existe evento asociado
+	if($tieneEvento == true)
+	{		
+		switch ($uc->SituacionFinal) {
+			case "Aprobado":
+				$situacionFinalClase = "estado-verde";
+				$estaAprobado = true;
+				break;
+			case "Reprobado":
+				$situacionFinalClase = "estado-rojo";
+				break;   
+			 default:
+			   $situacionFinalClase = "";
+		}	
+
+		$nota;
+		if($uc->Resultado == "-1")
+		{
+			$nota = "N/D";		
+		}
+		else
+		{
+			$nota = $uc->Resultado;
+		}
+		
+		$modalidad;
+		$modalidadClase;
+		switch ($uc->IdModalidad) {
+			case "2":
+				$modalidad = "Curso E-Learning";
+				$modalidadClase = "fa fa-laptop";			
+				break;
+			case "1":
+				$modalidad = "Curso Presencial";
+				$modalidadClase = "icon icon-user";
+				break;   
+			 default:
+			   $modalidad = "Default";
+			   $modalidadClase = "fa fa-laptop";
+		}	
+		
+		$estado;
+		$estadoClase;
+		switch ($uc->Estado) {
+			case "Completado":
+				$estado = "Completado";
+				$estadoClase = "estado-azul";			
+				break;
+			case "En Curso":
+				$estado = "En Progreso";
+				$estadoClase = "estado-amarillo";
+				break;   
+			 default:
+			   $estado = "No iniciado";
+			   $estadoClase = "estado-gris";
+		}	
+	}
+	
+	$r = '
+	<!--modulo1-->
+	<div class="modulo-curso col-sm-2 no-padding-right">
+		<div class=" panel panel-default">
+			<div class="panel-heading '.$situacionFinalClase.'">				
+				<h3 class="panel-title" title="'.$unidadCurricular.'">'.$unidadCurricularRecortada.'</h3>
+			</div>
+			<div class="panel-body">
+				<div class="play">';
+				if($tieneEvento == true && ($uc->IdModalidad == 2  || $uc->IdModalidad == 4))
+				{
+	$r .= '				
+					<a href="/colaborador/eventos/contenidosEvento?idPersona='.$idColaborador.'&idEvento='.$idEvento.'"><img src="../sites/default/files/images/bt-play-curso.png" width="38" height="38"></a>';
+				}
+	$r .= '
+				</div>
+				<div class="modulo-curso-imagen">
+					<img src="'.$imagen.'">
+				</div>
+			</div>
+			<div class="panel-footer">
+				<div class="col-sm-3 no-padding">';
+				if($tieneEvento == true)
+				{
+	$r .= '			<ul>
+						<li><i class="'.$modalidadClase.'" title="'.$modalidad.'"></i></li>
+						<li class="estado-circulo '.$estadoClase.'"  title="'.$estado.'"></li>
+					</ul>';
+				}
+	$r .= '				
+				</div>
+				<div class="col-sm-5 no-padding">';
+				
+				if($tieneEvento == true)
+				{
+	$r .= '			<ul>
+						<li><i class="icon icon-nota" title="'.$nota.'"></i>'.$nota.'</li>
+					</ul>';
+				}
+	$r .= '	
+					
+				</div>
+				<div class="col-sm-4 no-padding" >
+					<ul class="pull-right">';
+								
+					if($estaAprobado == true)
+					{
+	$r .= '			
+						<li><a href="javascript:void(0)" onclick="window.open(\'http://hcmdev.dldev.cl/Eventos/Reporte/Diploma.aspx?idPersona='.$idColaborador.'&idEvento='.$idEvento.'\')"><i class="icon icon-certificate" title="Diploma"></i></a></li>';					
+					}
+					/*
+					if($tieneEvento == true)
+					{
+	$r .= '									
+						<li><a href="#"><i class="icon icon-info" title="Detalle del Evento"></i></a></li>';
+					}
+					else
+					{
+	$r .= '			
+						<li><a href="#"><i class="icon icon-info" title="Detalle de Unidad Curricular"></i></a></li>';
+					}*/
+	$r .= '		
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>';
+				
+				
+	return $r;
+}
+
+function mallas_getIdPersona()
+{
+	
+	 global $user;
+	 $idSociedad = mallas_getIdSociedad();
+	 $userName  = $user->name;
+	 $parametros = array(
+        'idsociedad' => $idSociedad,
+        'nombre' => $userName,
+    );
+    
+    $xml = esb_connector_execute_service('DetallePersona', 'getDetallePersona', $parametros);
+    
+	$idPersona = "null";
+	
+	foreach ($xml->Entries->Entry as $entry) {
+		$idPersona = $entry->Id;	        	
+	}
+	return $idPersona;
+	//return "31";
+}
+
+function mallas_getIdSociedad()
+{
+	return "4164";
+}
+
+function create_container($class)
+{
+	return array(
+					'#type' => 'container',
+					'#attributes' => array(
+						'class'=> array($class)
+					)		
+				);
+}
