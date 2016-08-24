@@ -18,26 +18,19 @@ services:
     working_dir: /app
     restart: always
 
-  # Postgresql Server
-  database:
-    hostname: 'colaborador-db'
-    image: mysql:latest
-    volumes:
-       - ./.model:/var/lib/mysql
-#       remove comment only first install
-#       - ./dump:/docker-entrypoint-initdb.d
-    environment:
-      - MYSQL_USER=admin
-      - MYSQL_PASSWORD=colaborador
-      - MYSQL_DATABASE=colaborador
-      - MYSQL_ALLOW_EMPTY_PASSWORD=no
-    ports:
-      - "3306:3306"
+  # Mysql server
 
-  backup:
-      image: confirm/mysql-backup
+  database:
+      hostname: 'colaborador-db'
+      image: mysql:latest
       volumes:
-          - ./data/backup:/backup
-      links:
-          - database:my-mysql
-      restart: never
+         - ./.model:/var/lib/mysql
+         - ./dump/back:/docker-entrypoint-initdb.d
+      environment:
+        - MYSQL_USER=admin
+        - MYSQL_PASSWORD=colaborador
+        - MYSQL_DATABASE=colaborador
+        - MYSQL_ALLOW_EMPTY_PASSWORD=no
+        - MYSQL_ROOT_PASSWORD=colaborador
+      ports:
+        - "3306:3306"
