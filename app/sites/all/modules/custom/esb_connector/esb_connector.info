@@ -1,0 +1,5 @@
+;$Id$
+name = ESB Connector
+description = Integración de Drupal con el WSO2 ESB
+package = DL
+core = "7.x"

@@ -5,7 +5,7 @@ services:
     hostname: 'colaborador'
     # Build the Drupal 7 image
     # https://hub.docker.com/r/_/drupal/
-    build: .
+    build: apache-php
     ports:
       # Host machine's port 8000 will map to Drupal's port 80
       - "8000:80"
@@ -14,7 +14,7 @@ services:
       - ./app:/app
     links:
       - database:database
-    command: php -S 0.0.0.0:80 -t /app
+    command: 'php -S 0.0.0.0:80 -t /app'
     working_dir: /app
     restart: always
 
@@ -25,7 +25,7 @@ services:
       image: mysql:latest
       volumes:
          - ./.model:/var/lib/mysql
-         - ./dump/back:/docker-entrypoint-initdb.d
+         - ./dump/back:/apache-php-entrypoint-initdb.d
       environment:
         - MYSQL_USER=admin
         - MYSQL_PASSWORD=colaborador

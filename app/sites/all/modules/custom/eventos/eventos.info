@@ -1,0 +1,5 @@
+;$Id$
+name = Eventos
+description = Módulo de Eventos
+package = DL
+core = "7.x"
