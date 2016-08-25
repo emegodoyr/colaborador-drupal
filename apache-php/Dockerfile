@@ -18,7 +18,7 @@ RUN a2enmod rewrite
 # install the PHP extensions we need
 
 
-
+COPY php.ini /usr/local/etc/php/php.ini
 RUN php-config --configure-options --enable-soap
 
 RUN service apache2 restart
