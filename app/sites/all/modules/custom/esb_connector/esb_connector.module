@@ -26,14 +26,16 @@ function esb_connector_execute_service($service, $operation, $inputparameters) {
 //                'cache_wsdl'=>WSDL_CACHE_NONE 
     );
 //	$client = new SoapClient($esbconnector . $service . '?wsdl', $options);
-    $client = new SoapClient($esbconnector['url'] . $service . '?wsdl', $options);
+
 
     try {
+        $client = new SoapClient($esbconnector['url'] . $service . '?wsdl', $options);
 //            $resp =$client->$operation($inputparameters);
 //            $xml =$client->__soapCall($operation, array($inputparameters));
 
 //        $client->$operation($inputparameters);
-        $client->__soapCall($operation,$inputparameters);
+
+        $client->__soapCall($operation,array($inputparameters));
 //            $resp= simplexml_load_string($xml->);
         $resp = $client->__getLastResponse();
 		
