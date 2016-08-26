@@ -8,7 +8,7 @@ function eventos_menu() {
 
     $items['eventos/miseventos'] = array(
         'title' => 'Mis Eventos',
-        'page callback' => 'eventos_pageCallback',
+        'page callback' => 'eventos_miseventos',
         'access arguments' => array('access content'),
         'access callback' => 'user_is_logged_in',
         'type' => MENU_NORMAL_ITEM,
@@ -31,7 +31,7 @@ function eventos_menu() {
     return $items;
 }
 
-function eventos_pageCallback(){
+function eventos_miseventos(){
     $response = new Eventos();
     return $response->pageResponse();
 }
@@ -39,10 +39,10 @@ function eventos_pageCallback(){
 
 class Utils {
 
-     function getIdPersona(){
-        global $user;
-        $idSociedad = getIdSociedad();
-        $userName  = $user->name;
+    function getIdPersona(){
+//        global $user;
+        $idSociedad = $this->getIdSociedad();
+        $userName  = '8044145-2';
         $parametros = array(
             'idsociedad' => $idSociedad,
             'nombre' => $userName,
@@ -51,14 +51,14 @@ class Utils {
         $xml = esb_connector_execute_service('DetallePersona', 'getDetallePersona', $parametros);
 
         $idPersona = "null";
-
-        foreach ($xml->Entries->Entry as $entry) {
+        print $xml;
+        foreach ($xml->Entries->Entry as $entry){
             $idPersona = $entry->Id;
         }
         return $idPersona;
     }
 
-     function getIdSociedad(){
+    function getIdSociedad(){
         $response = variable_get('client');
         return $response['IdSociedad'];
     }
