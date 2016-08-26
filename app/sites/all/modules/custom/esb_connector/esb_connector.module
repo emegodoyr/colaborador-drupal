@@ -1,5 +1,6 @@
 <?php
 
+//require_once('lib/nusoap.php');
 function esb_connector_menu() {
 
     $items = array();
@@ -16,16 +17,16 @@ function esb_connector_menu() {
 function esb_connector_execute_service($service, $operation, $inputparameters) {
 //    global $user; 
 //    ini_set("soap.wsdl_cache_enabled", "0");
-    //$esbconnector = variable_get('esbconnector'); //'http://192.168.3.24:8280/services/'
-	$esbconnector = 'http://192.168.3.24:8280/services/';
+    $esbconnector = variable_get('soap'); //'http://192.168.3.24:8280/services/'
+//	$esbconnector = 'http://192.168.3.24:8280/services/';
     $options = array(
         'soap_version' => SOAP_1_1,
 //                'exceptions'=>true ,
         'trace' => 1
 //                'cache_wsdl'=>WSDL_CACHE_NONE 
     );
-	$client = new SoapClient($esbconnector . $service . '?wsdl', $options);
-    //$client = new SoapClient($esbconnector['esb_url'] . $service . '?wsdl', $options);
+//	$client = new SoapClient($esbconnector . $service . '?wsdl', $options);
+    $client = new SoapClient($esbconnector['url'] . $service . '?wsdl', $options);
 
     try {
 //            $resp =$client->$operation($inputparameters);

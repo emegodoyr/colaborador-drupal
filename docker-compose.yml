@@ -5,16 +5,17 @@ services:
     hostname: 'colaborador'
     # Build the Drupal 7 image
     # https://hub.docker.com/r/_/drupal/
-    build: apache-php
+    image: webdevops/php-apache:ubuntu-16.04
     ports:
       # Host machine's port 8000 will map to Drupal's port 80
       - "8000:80"
+      - "10081:10081"
     volumes:
       # Drupal should live in the "app-old" directory
       - ./app:/app
     links:
       - database:database
-    command: 'php -S 0.0.0.0:80 -t /app'
+#    command: 'php -S 0.0.0.0:80 -t /app'
     working_dir: /app
     restart: always
 

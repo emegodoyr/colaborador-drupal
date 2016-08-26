@@ -4,10 +4,11 @@ module_load_include('inc', 'content', 'includes/form');
 function eventos_menu() {
 
     $items = array();
+    $page_callback = new Eventos();
 
     $items['eventos/miseventos'] = array(
         'title' => 'Mis Eventos',
-        'page callback' => 'eventos_miseventos',
+        'page callback' => 'eventos_pageCallback',
         'access arguments' => array('access content'),
         'access callback' => 'user_is_logged_in',
         'type' => MENU_NORMAL_ITEM,
@@ -30,195 +31,229 @@ function eventos_menu() {
     return $items;
 }
 
-//function eventos_miseventos() {
-//    return "hola";
-//
-//}
-function eventos_miseventos() {
-//    drupal_add_js(drupal_get_path('module', 'custom', 'eventos') . '/js/datatables-custom.js');
-    $idPersona = mallas_getIdPersona();
-    $idSociedad = mallas_getIdSociedad();
+function eventos_pageCallback(){
+    $response = new Eventos();
+    return $response->pageResponse();
+}
 
-    $parametros = array(
-        'IdSociedad' => $idSociedad,
-        'IdColaborador' => $idPersona,
-    );
 
-    $xml = esb_connector_execute_service('DS_Mallas', 'getMallasPersona', $parametros);
+class Utils {
 
-    $attributes['datatable_options'] = array(
-        'bFilter'		=> FALSE,
-        'bInfo'     	=> TRUE,
-        'language' 		=> array('url'=>'/sites/all/modules/datatables/dataTables/media/js/dataTables.spanish.js'),
-        'responsive'	=> TRUE,
-        'aoColumnsDef' 	=> array('bSortable'=>FALSE,'aTargets'=>array('no-sort')),
-        'aaSorting' 	=> array()
-    );
-
-    // Define table columns
-    $header = array(
-        /*array
-        (
-            'data' => t(''),
-            'datatable_options' => array(
-                'bSortable' => FALSE,
-                'bSearchable' => FALSE,
-            ),
-        ),
-        array
-        (
-            'data' => t(''),
-            'datatable_options' => array(
-                'bSortable' => FALSE,
-                'bSearchable' => FALSE,
-            ),
-        ),*/
-        array
-        (
-            'data' => t(''),
-            'datatable_options' => array(
-                'bSortable' => FALSE,
-                'bSearchable' => FALSE,
-            ),
-        ),
-        array
-        (
-            'data' => t('Nombre'),
-            'datatable_options' => array(
-                'bSortable' => TRUE,
-                'bSearchable' => TRUE,
-            ),
-        ),
-        array
-        (
-            'data' => t('% Avance'),
-            'datatable_options' => array(
-                'bSortable' => TRUE,
-                'bSearchable' => TRUE,
-            ),
-        ),
-        array
-        (
-            'data' => t('Cant.UC'),
-            'datatable_options' => array(
-                'bSortable' => TRUE,
-                'bSearchable' => TRUE,
-            ),
-        ),
-        array
-        (
-            'data' => t('Completas'),
-            'datatable_options' => array(
-                'bSortable' => TRUE,
-                'bSearchable' => TRUE,
-            ),
-        ),
-        array
-        (
-            'data' => t('NoCompletas'),
-            'datatable_options' => array(
-                'bSortable' => TRUE,
-                'bSearchable' => TRUE,
-            ),
-        ),
-        array
-        (
-            'data' => t('Asignación'),
-            'datatable_options' => array(
-                'bSortable' => TRUE,
-                'bSearchable' => TRUE,
-            ),
-        ),
-
-    );
-
-    // Table data.
-    $rows = array();
-
-    foreach ($xml->Entries->Entry as $entry) {
-        /*		$row = array(
-                    '<a href="#" title="Ver Diagrama"><span class="icon-diagram viewstruct"></span></a>',
-                    '<a href="#" title="Ver Listado"><span class="glyphicon glyphicon-th-list viewlistado"></span></a>',
-                    '<a href="/malla/vermalla?malla='.$entry->IdVersionMalla.'" title="Ver Miniaturas"><span class="glyphicon glyphicon-th viewminiatura"></span></a>',
-                    $entry->NombreMalla,
-                    $entry->PorcentajeAvance,
-                    $entry->CantidadUnidadesCurriculares,
-                    $entry->UnidadesCompletadas,
-                    $entry->UnidadesPendientes,
-                    $entry->FechaInscripcion
-                );
-        */
-        $row = array(
-            '<a href="/colaborador/malla/vermalla?malla='.$entry->IdVersionMalla.'" title="Ver Miniaturas"><span class="glyphicon glyphicon-th viewminiatura"></span></a>',
-            $entry->NombreMalla,
-            $entry->PorcentajeAvance,
-            $entry->CantidadUnidadesCurriculares,
-            $entry->UnidadesCompletadas,
-            $entry->UnidadesPendientes,
-            $entry->FechaInscripcion
+     function getIdPersona(){
+        global $user;
+        $idSociedad = getIdSociedad();
+        $userName  = $user->name;
+        $parametros = array(
+            'idsociedad' => $idSociedad,
+            'nombre' => $userName,
         );
-        array_push($rows, $row);
+
+        $xml = esb_connector_execute_service('DetallePersona', 'getDetallePersona', $parametros);
+
+        $idPersona = "null";
+
+        foreach ($xml->Entries->Entry as $entry) {
+            $idPersona = $entry->Id;
+        }
+        return $idPersona;
     }
 
-    // Or, render using a theme function.
-    $variables = array(
-        'attributes' => $attributes,
-        'header' => $header,
-        'rows' => $rows,
-    );
-    $datatable = theme('datatable', $variables);
-
-
-    //contenido global
-    $form['content']=array(
-        '#type' => 'container',
-        '#attributes' => array(
-            'class'=> array('row malla-drupal mallas')
-        )
-    );
-
-    //panel
-    $form['content']['panel']=array(
-        '#type' => 'container',
-        '#attributes' => array(
-            'class'=> array('panel panel-default panel-page-content')
-        )
-    );
-
-    //header del panel
-    $form['content']['panel']['header']=array(
-        '#type' => 'container',
-        '#attributes' => array(
-            'class'=> array('panel-heading')
-        )
-    );
-
-    $form['content']['panel']['header']['titulo']=array(
-        '#markup' => 'Mis Mallas'
-    );
-
-    //body del panel
-    $form['content']['panel']['body']=array(
-        '#type' => 'container',
-        '#attributes' => array(
-            'class'=> array('panel-body')
-        )
-    );
-
-    //contenedor de la tabla
-    $form['content']['panel']['body']['content']=array(
-        '#type' => 'container',
-        '#attributes' => array(
-            'class'=> array('tabla-resultados-no-registros-buscar')
-        )
-    );
-
-    //tabla
-    $form['content']['panel']['body']['content']['tabla']=array(
-        '#markup' => $datatable
-    );
-    return $form;
+     function getIdSociedad(){
+        $response = variable_get('client');
+        return $response['IdSociedad'];
+    }
 }
+
+class Eventos {
+
+    function pageResponse(){
+        $utils = new Utils();
+        $idPersona = $utils->getIdPersona();
+        $idSociedad = $utils->getIdSociedad();
+
+        $parametros = array(
+            'IdSociedad' => $idSociedad,
+            'IdColaborador' => $idPersona,
+        );
+
+        $xml = esb_connector_execute_service('DS_Mallas', 'getMallasPersona', $parametros);
+
+        $attributes['datatable_options'] = array(
+            'bFilter'		=> FALSE,
+            'bInfo'     	=> TRUE,
+            'language' 		=> array('url'=>'/sites/all/modules/datatables/dataTables/media/js/dataTables.spanish.js'),
+            'responsive'	=> TRUE,
+            'aoColumnsDef' 	=> array('bSortable'=>FALSE,'aTargets'=>array('no-sort')),
+            'aaSorting' 	=> array()
+        );
+
+        // Define table columns
+        $header = array(
+            /*array
+            (
+                'data' => t(''),
+                'datatable_options' => array(
+                    'bSortable' => FALSE,
+                    'bSearchable' => FALSE,
+                ),
+            ),
+            array
+            (
+                'data' => t(''),
+                'datatable_options' => array(
+                    'bSortable' => FALSE,
+                    'bSearchable' => FALSE,
+                ),
+            ),*/
+            array
+            (
+                'data' => t(''),
+                'datatable_options' => array(
+                    'bSortable' => FALSE,
+                    'bSearchable' => FALSE,
+                ),
+            ),
+            array
+            (
+                'data' => t('Nombre'),
+                'datatable_options' => array(
+                    'bSortable' => TRUE,
+                    'bSearchable' => TRUE,
+                ),
+            ),
+            array
+            (
+                'data' => t('% Avance'),
+                'datatable_options' => array(
+                    'bSortable' => TRUE,
+                    'bSearchable' => TRUE,
+                ),
+            ),
+            array
+            (
+                'data' => t('Cant.UC'),
+                'datatable_options' => array(
+                    'bSortable' => TRUE,
+                    'bSearchable' => TRUE,
+                ),
+            ),
+            array
+            (
+                'data' => t('Completas'),
+                'datatable_options' => array(
+                    'bSortable' => TRUE,
+                    'bSearchable' => TRUE,
+                ),
+            ),
+            array
+            (
+                'data' => t('NoCompletas'),
+                'datatable_options' => array(
+                    'bSortable' => TRUE,
+                    'bSearchable' => TRUE,
+                ),
+            ),
+            array
+            (
+                'data' => t('Asignación'),
+                'datatable_options' => array(
+                    'bSortable' => TRUE,
+                    'bSearchable' => TRUE,
+                ),
+            ),
+
+        );
+
+        // Table data.
+        $rows = array();
+
+        foreach ($xml->Entries->Entry as $entry) {
+            /*		$row = array(
+                        '<a href="#" title="Ver Diagrama"><span class="icon-diagram viewstruct"></span></a>',
+                        '<a href="#" title="Ver Listado"><span class="glyphicon glyphicon-th-list viewlistado"></span></a>',
+                        '<a href="/malla/vermalla?malla='.$entry->IdVersionMalla.'" title="Ver Miniaturas"><span class="glyphicon glyphicon-th viewminiatura"></span></a>',
+                        $entry->NombreMalla,
+                        $entry->PorcentajeAvance,
+                        $entry->CantidadUnidadesCurriculares,
+                        $entry->UnidadesCompletadas,
+                        $entry->UnidadesPendientes,
+                        $entry->FechaInscripcion
+                    );
+            */
+            $row = array(
+                '<a href="/colaborador/malla/vermalla?malla='.$entry->IdVersionMalla.'" title="Ver Miniaturas"><span class="glyphicon glyphicon-th viewminiatura"></span></a>',
+                $entry->NombreMalla,
+                $entry->PorcentajeAvance,
+                $entry->CantidadUnidadesCurriculares,
+                $entry->UnidadesCompletadas,
+                $entry->UnidadesPendientes,
+                $entry->FechaInscripcion
+            );
+            array_push($rows, $row);
+        }
+
+        // Or, render using a theme function.
+        $variables = array(
+            'attributes' => $attributes,
+            'header' => $header,
+            'rows' => $rows,
+        );
+        $datatable = theme('datatable', $variables);
+
+
+        //contenido global
+        $form['content']=array(
+            '#type' => 'container',
+            '#attributes' => array(
+                'class'=> array('row malla-drupal mallas')
+            )
+        );
+
+        //panel
+        $form['content']['panel']=array(
+            '#type' => 'container',
+            '#attributes' => array(
+                'class'=> array('panel panel-default panel-page-content')
+            )
+        );
+
+        //header del panel
+        $form['content']['panel']['header']=array(
+            '#type' => 'container',
+            '#attributes' => array(
+                'class'=> array('panel-heading')
+            )
+        );
+
+        $form['content']['panel']['header']['titulo']=array(
+            '#markup' => 'Mis Mallas'
+        );
+
+        //body del panel
+        $form['content']['panel']['body']=array(
+            '#type' => 'container',
+            '#attributes' => array(
+                'class'=> array('panel-body')
+            )
+        );
+
+        //contenedor de la tabla
+        $form['content']['panel']['body']['content']=array(
+            '#type' => 'container',
+            '#attributes' => array(
+                'class'=> array('tabla-resultados-no-registros-buscar')
+            )
+        );
+
+        //tabla
+        $form['content']['panel']['body']['content']['tabla']=array(
+            '#markup' => $datatable
+        );
+        return $form;
+    }
+}
+
+
 function eventos_cerrarCurso() {
     drupal_add_js(drupal_get_path('module', 'eventos') . '/js/cerrarCurso.js');
     return '';
