@@ -1,263 +1,30 @@
 <?php
 module_load_include('inc', 'content', 'includes/form');
 
+
 function eventos_menu() {
 
-    $items = array();
+    $response = new Hooks;
+    return $response->Menu();
 
-    $items['eventos/miseventos'] = array(
-        'title' => 'Mis Eventos',
-        'page callback' => 'eventos_miseventos',
-        'access arguments' => array('access content'),
-        'access callback' => 'user_is_logged_in',
-        'type' => MENU_NORMAL_ITEM,
-        'menu_name' => 'user-menu'
-    );
-
-    $items['eventos/contenidosEvento'] = array(
-        'title' => '',
-        'page callback' => 'eventos_contenidosEvento',
-        'access arguments' => array('access content'),
-        'type' => MENU_NORMAL_ITEM
-    );
-    $items['cerrarCurso.htm'] = array(
-        'title' => 'cc',
-        'page callback' => 'eventos_cerrarCurso',
-        'access arguments' => array('access content'),
-        'type' => MENU_NORMAL_ITEM
-    );
-
-    return $items;
 }
+
 
 function eventos_miseventos(){
+
     $response = new Eventos();
     return $response->pageResponse();
-}
 
-
-class Utils {
-
-    function getIdPersona(){
-//        global $user;
-        $idSociedad = $this->getIdSociedad();
-        $userName  = '8044145-2';
-        $parametros = array(
-            'idsociedad' => $idSociedad,
-            'nombre' => $userName,
-        );
-
-        $xml = esb_connector_execute_service('DetallePersona', 'getDetallePersona', $parametros);
-
-        $id = "null";
-        foreach ($xml->Entries->Entry as $entry){
-            $id = $entry->Id;
-        }
-        return $id;
-    }
-
-    function getIdSociedad(){
-        $response = variable_get('client');
-        return $response['IdSociedad'];
-    }
-}
-
-class Eventos {
-
-    function pageResponse(){
-        $utils = new Utils();
-        $idPersona = $utils->getIdPersona();
-        $idSociedad = $utils->getIdSociedad();
-
-        $parametros = array(
-            'IdSociedad' => $idSociedad,
-            'IdPersona' => $idPersona,
-        );
-        $xml = esb_connector_execute_service('D_Eventos', 'ObtenerEventosPorIdPersona', $parametros);
-//        echo $idPersona;
-//        echo $xml;
-        $attributes['datatable_options'] = array(
-            'bFilter'		=> FALSE,
-            'bInfo'     	=> TRUE,
-            'language' 		=> array('url'=>'/sites/all/modules/datatables/dataTables/media/js/dataTables.spanish.js'),
-            'responsive'	=> TRUE,
-            'aoColumnsDef' 	=> array('bSortable'=>FALSE,'aTargets'=>array('no-sort')),
-            'aaSorting' 	=> array()
-        );
-
-        // Define table columns
-        $header = array(
-            /*array
-            (
-                'data' => t(''),
-                'datatable_options' => array(
-                    'bSortable' => FALSE,
-                    'bSearchable' => FALSE,
-                ),
-            ),
-            array
-            (
-                'data' => t(''),
-                'datatable_options' => array(
-                    'bSortable' => FALSE,
-                    'bSearchable' => FALSE,
-                ),
-            ),*/
-            array
-            (
-                'data' => t(''),
-                'datatable_options' => array(
-                    'bSortable' => FALSE,
-                    'bSearchable' => FALSE,
-                ),
-            ),
-            array
-            (
-                'data' => t('Nombre'),
-                'datatable_options' => array(
-                    'bSortable' => TRUE,
-                    'bSearchable' => TRUE,
-                ),
-            ),
-            array
-            (
-                'data' => t('% Avance'),
-                'datatable_options' => array(
-                    'bSortable' => TRUE,
-                    'bSearchable' => TRUE,
-                ),
-            ),
-            array
-            (
-                'data' => t('Cant.UC'),
-                'datatable_options' => array(
-                    'bSortable' => TRUE,
-                    'bSearchable' => TRUE,
-                ),
-            ),
-            array
-            (
-                'data' => t('Completas'),
-                'datatable_options' => array(
-                    'bSortable' => TRUE,
-                    'bSearchable' => TRUE,
-                ),
-            ),
-            array
-            (
-                'data' => t('NoCompletas'),
-                'datatable_options' => array(
-                    'bSortable' => TRUE,
-                    'bSearchable' => TRUE,
-                ),
-            ),
-            array
-            (
-                'data' => t('Asignación'),
-                'datatable_options' => array(
-                    'bSortable' => TRUE,
-                    'bSearchable' => TRUE,
-                ),
-            ),
-
-        );
-
-        // Table data.
-        $rows = array();
-
-        foreach ($xml->Entries as $entry) {
-//            echo $entry;
-            /*		$row = array(
-                        '<a href="#" title="Ver Diagrama"><span class="icon-diagram viewstruct"></span></a>',
-                        '<a href="#" title="Ver Listado"><span class="glyphicon glyphicon-th-list viewlistado"></span></a>',
-                        '<a href="/malla/vermalla?malla='.$entry->IdVersionMalla.'" title="Ver Miniaturas"><span class="glyphicon glyphicon-th viewminiatura"></span></a>',
-                        $entry->NombreMalla,
-                        $entry->PorcentajeAvance,
-                        $entry->CantidadUnidadesCurriculares,
-                        $entry->UnidadesCompletadas,
-                        $entry->UnidadesPendientes,
-                        $entry->FechaInscripcion
-                    );
-            */
-            $row = array(
-                '<a href="/colaborador/malla/vermalla?malla='.$entry->NombreEvento.'" title="Ver Miniaturas"><span class="glyphicon glyphicon-th viewminiatura"></span></a>',
-                $entry->Entry->NombreEvento,
-                $entry->Entry->CodigoUnidadCurricular,
-                $entry->Entry->NombreUnidadCurricular,
-                $entry->Entry->Estado,
-                $entry->Resultado,
-                $entry->SituacionFinal
-            );
-            array_push($rows, $row);
-        }
-
-        // Or, render using a theme function.
-        $variables = array(
-            'attributes' => $attributes,
-            'header' => $header,
-            'rows' => $rows,
-        );
-        $datatable = theme('datatable', $variables);
-
-
-        //contenido global
-        $form['content']=array(
-            '#type' => 'container',
-            '#attributes' => array(
-                'class'=> array('row malla-drupal eventos')
-            )
-        );
-
-        //panel
-        $form['content']['panel']=array(
-            '#type' => 'container',
-            '#attributes' => array(
-                'class'=> array('panel panel-default panel-page-content')
-            )
-        );
-
-        //header del panel
-        $form['content']['panel']['header']=array(
-            '#type' => 'container',
-            '#attributes' => array(
-                'class'=> array('panel-heading')
-            )
-        );
-
-        $form['content']['panel']['header']['titulo']=array(
-            '#markup' => 'Mis Eventos'
-        );
-
-        //body del panel
-        $form['content']['panel']['body']=array(
-            '#type' => 'container',
-            '#attributes' => array(
-                'class'=> array('panel-body')
-            )
-        );
-
-        //contenedor de la tabla
-        $form['content']['panel']['body']['content']=array(
-            '#type' => 'container',
-            '#attributes' => array(
-                'class'=> array('tabla-resultados-no-registros-buscar')
-            )
-        );
-
-        //tabla
-        $form['content']['panel']['body']['content']['tabla']=array(
-            '#markup' => $datatable
-        );
-        return $form;
-    }
 }
 
 
 function eventos_cerrarCurso() {
-    drupal_add_js(drupal_get_path('module', 'eventos') . '/js/cerrarCurso.js');
+    drupal_add_js(drupal_get_path('module','eventos') . '/js/cerrarCurso.js');
     return '';
 
 }
+
+
 function eventos_contenidosEvento() {
     drupal_add_js('var curso;', 'settings');
 
@@ -265,7 +32,7 @@ function eventos_contenidosEvento() {
 
     drupal_add_js('function closeCurso() {curso.hide();location.reload(true);}','inline');
     $idEvento = $_GET['idEvento'];
-    $idPersona = $_GET['idPersona'];
+    $idPersona = '6';
     $parametros = array(
         'IdEvento' => $idEvento,
         'IdPersona' => $idPersona,
@@ -385,7 +152,7 @@ function eventos_contenidosEvento() {
     $form['content']=array(
         '#type' => 'container',
         '#attributes' => array(
-            'class'=> array('row malla-drupal mallas')
+            'class'=> array('row eventos-drupal mallas')
         )
     );
 
@@ -431,9 +198,8 @@ function eventos_contenidosEvento() {
     return $form ;
 
 }
-function getLink(){
 
-}
+
 function getSituacionFinal($idEstado){
     switch ($idEstado) {
         case 1:
@@ -447,6 +213,8 @@ function getSituacionFinal($idEstado){
     }
 
 }
+
+
 function getEstado($idEstado){
     switch ($idEstado) {
         case 1:
@@ -463,6 +231,7 @@ function getEstado($idEstado){
     }
 
 }
+
 
 function eventos_access_callback()
 {

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 -- MySQL dump 10.13  Distrib 5.7.14, for Linux (x86_64)
 --
 -- Host: database    Database: colaborador
@@ -3969,3 +3970,5 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2016-08-29 16:49:51
+=======
+>>>>>>> bc14cab843c8aba77ef93535b51c309140ecdbc9
