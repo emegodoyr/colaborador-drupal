@@ -1,0 +1,645 @@
+<?php
+module_load_include('inc', 'content', 'includes/form');
+
+function ficha_menu() {
+
+    $items = array();
+
+    $items['misdatos'] = array(
+        'title' => 'Información Personal',
+        'page callback' => 'ficha_misdatos',
+        'access arguments' => array('access content'),
+        'access callback' => 'user_is_logged_in',
+        'type' => MENU_CALLBACK,
+        'menu_name' => 'user-menu'
+    );
+    
+    $items['misdatos/informacionlaboral'] = array(
+        'title' => 'Información Laboral',
+        'page callback' => 'ficha_infolaboral',
+        'access arguments' => array('access content'),
+		'access callback' => 'user_is_logged_in',
+        'type' => MENU_CALLBACK,
+        'menu_name' => 'user-menu'		
+    );
+
+    return $items;
+}
+
+function ficha_misdatos() {
+	return drupal_get_form('ficha_form');
+}
+
+function ficha_infolaboral() {
+	return drupal_get_form('ficha_informacionLaboral');
+}
+
+function ficha_access_callback()
+{
+	return !user_is_anonymous(); // hides menu if the user is anonymous
+}
+
+function ficha_informacionLaboral($form, &$form_state) {
+
+	$idSociedad = mallas_getIdSociedad();	
+	$idPersona = mallas_getIdPersona();
+	$parametrosFichaLaboral = array(
+			'IdSociedad' => $idSociedad,
+			'IdPersona' => $idPersona,
+	);
+	
+	$xmlFichaLaboral = esb_connector_execute_service('DS_GOP', 'obtenerFichaInformacionLaboral', $parametrosFichaLaboral);
+	
+	foreach ($xmlFichaLaboral->obtenerFichaInformacionLaboralResponse->obtenerFichaInformacionLaboralResult as $entry) {
+		
+	
+		$form['content'] = create_container('');
+		
+		$form['content']['accordion'] = array(
+													'#type' => 'container',
+													'#attributes' => array(
+														'class'=> array('form-collapse'),
+														'aria-multiselectable'=> array('true'),
+														'role'=> array('tablist')
+													)		
+												);
+												
+		//seccion 1
+		$form['content']['accordion']['contextoActual'] = create_container('panel panel-default');
+			
+		$form['content']['accordion']['contextoActual']['headingOne'] = array(
+													'#type' => 'container',
+													'#attributes' => array(
+														'class'=> array('panel-heading'),
+														'aria-multiselectable'=> array('true'),
+														'role'=> array('tab')
+													)		
+												);
+												
+		$form['content']['accordion']['contextoActual']['headingOne']['titulo']=array('#markup' => '<h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#edit-collapseone" aria-expanded="true" aria-controls="collapseOne">Contexto Laboral Actual</a> </h4>');
+		
+		$form['content']['accordion']['contextoActual']['collapseOne']=  array(
+													'#type' => 'container',
+													'#attributes' => array(
+														'class'=> array('panel-body panel-collapse collapse in'),
+														'aria-labelledby'=> array('edit-headingOne'),
+														'role'=> array('tabpanel')
+													)		
+												);
+
+		
+		$form['content']['accordion']['contextoActual']['collapseOne']['contextoActualSeccion1']= create_container('col-sm-4');
+		
+		$form['content']['accordion']['contextoActual']['collapseOne']['contextoActualSeccion1']['NombreCargo'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->NombreCargo,
+			'#title' =>'Cargo',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['contextoActual']['collapseOne']['contextoActualSeccion1']['NombreUnidadOrganizacional'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->NombreUnidadOrganizacional,
+			'#title' =>'Unidad Organizacional',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['contextoActual']['collapseOne']['contextoActualSeccion1']['NombreUnidadNegocio'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->NombreUnidadNegocio,
+			'#title' =>'Unidad Negocio',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['contextoActual']['collapseOne']['contextoActualSeccion1']['NombrePersonaJefe'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->NombrePersonaJefe,
+			'#title' =>'Jefatura Directa',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['contextoActual']['collapseOne']['contextoActualSeccion1']['EmailLaboral'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->EmailLaboral,
+			'#title' =>'Email Laboral',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['contextoActual']['collapseOne']['contextoActualSeccion1']['TelefonoLaboral'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->TelefonoLaboral,
+			'#title' =>'Télefono Laboral Fijo',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['contextoActual']['collapseOne']['contextoActualSeccion1']['CelularLaboral'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->CelularLaboral,
+			'#title' =>'Celular Laboral',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['contextoActual']['collapseOne']['contextoActualSeccion2']= create_container('col-sm-4');
+		$form['content']['accordion']['contextoActual']['collapseOne']['contextoActualSeccion2']['FranquiciaSence'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->FranquiciaSence,
+			'#title' =>'Franquicia SENCE',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['contextoActual']['collapseOne']['contextoActualSeccion2']['NombreNivelOcupacional'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->NombreNivelOcupacional,
+			'#title' =>'Nivel Ocupacional SENCE',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['contextoActual']['collapseOne']['contextoActualSeccion2']['NombreEscolaridadSence'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->NombreEscolaridadSence,
+			'#title' =>'Nivel Escolaridad SENCE',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['contextoActual']['collapseOne']['contextoActualSeccion2']['NombreCentroCosto'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->NombreCentroCosto,
+			'#title' =>'NombreCentroCosto',
+			'#disabled' => TRUE,			
+		);
+		
+		//seccion 2
+		$form['content']['accordion']['contratoVigente'] = create_container('panel panel-default');
+			
+		$form['content']['accordion']['contratoVigente']['headingTwo'] = array(
+													'#type' => 'container',
+													'#attributes' => array(
+														'class'=> array('panel-heading'),
+														'aria-multiselectable'=> array('true'),
+														'role'=> array('tab')
+													)		
+												);
+												
+		$form['content']['accordion']['contratoVigente']['headingTwo']['titulo']=array('#markup' => '<h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#edit-collapsetwo" aria-expanded="true" aria-controls="collapsetwo">Información del Contrato Vigente</a> </h4>');
+		
+		
+		
+		$form['content']['accordion']['contratoVigente']['collapseTwo']=  array(
+													'#type' => 'container',
+													'#attributes' => array(
+														'class'=> array('panel-body panel-collapse collapse'),
+														'aria-labelledby'=> array('edit-headingTwo'),
+														'role'=> array('tabpanel')
+													)		
+												);
+		
+		$form['content']['accordion']['contratoVigente']['collapseTwo']['seccion1'] = create_container('col-sm-4');		
+											
+		$form['content']['accordion']['contratoVigente']['collapseTwo']['seccion1']['NombreSociedadContratante'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->NombreSociedadContratante,
+			'#title' =>'Sociedad Contratante',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['contratoVigente']['collapseTwo']['seccion1']['NombreTipoContrato'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->NombreTipoContrato,
+			'#title' =>'Tipo Contrato',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['contratoVigente']['collapseTwo']['seccion1']['FechaInicioContrato'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->FechaInicioContrato,
+			'#title' =>'Fecha Inicio',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['contratoVigente']['collapseTwo']['seccion1']['FechaTerminoContrato '] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->FechaTerminoContrato ,
+			'#title' =>'Fecha Término',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['contratoVigente']['collapseTwo']['seccion1']['ComentarioDesvinculacion '] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->ComentarioDesvinculacion ,
+			'#title' =>'Comentarios',
+			'#disabled' => TRUE,			
+		);
+	}
+	
+	return $form;
+}
+
+function ficha_form($form, &$form_state) {
+
+	$idSociedad = mallas_getIdSociedad();	
+	$idPersona = mallas_getIdPersona();
+	$parametrosFichaPersonal = array(
+			'IdSociedad' => $idSociedad,
+			'IdPersona' => $idPersona,
+	);
+	
+	$xmlFichaPersonal = esb_connector_execute_service('DS_GOP', 'obtenerFichaInformacionPersonal', $parametrosFichaPersonal);
+	
+	foreach ($xmlFichaPersonal->obtenerFichaInformacionPersonalResponse->obtenerFichaInformacionPersonalResult as $entry) {
+	
+	
+		$form['content'] = create_container('');
+		$form['content']['accordion'] = array(
+													'#type' => 'container',
+													'#attributes' => array(
+														'class'=> array('form-collapse'),
+														'aria-multiselectable'=> array('true'),
+														'role'=> array('tablist')
+													)		
+												);
+												
+		//seccion 1
+		$form['content']['accordion']['datosPersonales'] = create_container('panel panel-default');
+												
+		
+		/* <div class="panel-heading" role="tab" id="headingOne">
+                <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Contexto Laboral Actual</a> </h4>
+              </div>
+			*/									
+		$form['content']['accordion']['datosPersonales']['headingOne'] = array(
+													'#type' => 'container',
+													'#attributes' => array(
+														'class'=> array('panel-heading'),
+														'aria-multiselectable'=> array('true'),
+														'role'=> array('tab')
+													)		
+												);
+												
+		$form['content']['accordion']['datosPersonales']['headingOne']['titulo']=array('#markup' => '<h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#edit-collapseone" aria-expanded="true" aria-controls="collapseOne">General</a> </h4>');
+		
+		$form['content']['accordion']['datosPersonales']['collapseOne']=  array(
+													'#type' => 'container',
+													'#attributes' => array(
+														'class'=> array('panel-body panel-collapse collapse in'),
+														'aria-labelledby'=> array('edit-headingOne'),
+														'role'=> array('tabpanel')
+													)		
+												);
+
+		$form['content']['accordion']['datosPersonales']['collapseOne']['seccion1'] = create_container('col-sm-4 form-wrapper form-group');
+		
+		$form['content']['accordion']['datosPersonales']['collapseOne']['seccion1']['cedulaId'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->CedulaId,
+			'#title' =>'Cedula Id.',
+			'#disabled' => TRUE,			
+		);
+		$form['content']['accordion']['datosPersonales']['collapseOne']['seccion1']['nombre'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->Nombre.' '.$entry->ApellidoPaterno.' '.$entry->ApellidoMaterno,
+			'#title' =>'Nombre',
+			'#disabled' => TRUE,			
+		);
+		$form['content']['accordion']['datosPersonales']['collapseOne']['seccion1']['telefonoFijo'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->TelefonoFijoPersonal,
+			'#title' =>'Teléfono Fijo',
+			'#disabled' => TRUE,			
+		);
+		$form['content']['accordion']['datosPersonales']['collapseOne']['seccion1']['telfonoCelular'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->TelefonoMovilPersonal,
+			'#title' =>'Teléfono Móvil',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['datosPersonales']['collapseOne']['seccion1']['emailPersonal'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->EmailPersonal,
+			'#title' =>'Email Personal',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['datosPersonales']['collapseOne']['seccion1']['NombrePaisNacionalidad'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->NombrePaisNacionalidad,
+			'#title' =>'País de Origen',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['datosPersonales']['collapseOne']['seccion2'] = create_container('col-sm-4 form-wrapper form-group');
+		
+		$form['content']['accordion']['datosPersonales']['collapseOne']['seccion2']['NombreGenero'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->NombreGenero,
+			'#title' =>'Género',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['datosPersonales']['collapseOne']['seccion2']['FechaMatrimonio'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->FechaMatrimonio,
+			'#title' =>'Fecha Matrimonio',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['datosPersonales']['collapseOne']['seccion2']['NombreEstadoCivil'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->NombreEstadoCivil,
+			'#title' =>'Estado Civil',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['datosPersonales']['collapseOne']['seccion2']['FechaNacimiento'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->FechaNacimiento,
+			'#title' =>'Fecha Nacimiento',
+			'#disabled' => TRUE,			
+		);
+		
+		//Seccion 2
+		
+		$form['content']['accordion']['direccionPersonal'] = create_container('panel panel-default');
+												
+												
+		$form['content']['accordion']['direccionPersonal']['headingTwo'] = array(
+													'#type' => 'container',
+													'#attributes' => array(
+														'class'=> array('panel-heading'),
+														'aria-multiselectable'=> array('true'),
+														'role'=> array('tab')
+													)		
+												);
+		$form['content']['accordion']['direccionPersonal']['headingTwo']['titulo']=array('#markup' => '<h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#edit-collapsetwo" aria-expanded="true" aria-controls="collapseTwo">Dirección Personal</a> </h4>');
+		
+		$form['content']['accordion']['direccionPersonal']['collapseTwo']=  array(
+													'#type' => 'container',
+													'#attributes' => array(
+														'class'=> array('panel-body panel-collapse collapse'),
+														'aria-labelledby'=> array('edit-headingTwo'),
+														'role'=> array('tabpanel')
+													)		
+												);
+												
+		$form['content']['accordion']['direccionPersonal']['collapseTwo']['seccion1'] = create_container('col-sm-4');
+		
+		$form['content']['accordion']['direccionPersonal']['collapseTwo']['seccion1']['NombreTipoDireccion'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->NombreTipoDireccion,
+			'#title' =>'Tipo',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['direccionPersonal']['collapseTwo']['seccion1']['Direccion'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->Direccion,
+			'#title' =>'Dirección',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['direccionPersonal']['collapseTwo']['seccion1']['DireccionNumero'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->DireccionNumero,
+			'#title' =>'N°',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['direccionPersonal']['collapseTwo']['seccion1']['DireccionOtro'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->DireccionOtro,
+			'#title' =>'Otro',
+			'#disabled' => TRUE,			
+		);
+		
+		//SECCION 3
+		$form['content']['accordion']['datosEmergencia'] = create_container('panel panel-default');
+		
+												
+		$form['content']['accordion']['datosEmergencia']['headingThree'] = array(
+													'#type' => 'container',
+													'#attributes' => array(
+														'class'=> array('panel-heading'),
+														'aria-multiselectable'=> array('true'),
+														'role'=> array('tab')
+													)		
+												);
+		$form['content']['accordion']['datosEmergencia']['headingThree']['titulo']=array('#markup' => '<h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#edit-collapsethree" aria-expanded="true" aria-controls="collapseThree">Datos Contacto Emergencia</a> </h4>');
+		
+		$form['content']['accordion']['datosEmergencia']['collapseThree']=  array(
+													'#type' => 'container',
+													'#attributes' => array(
+														'class'=> array('panel-body panel-collapse collapse'),
+														'aria-labelledby'=> array('edit-headingThree'),
+														'role'=> array('tabpanel')
+													)		
+												);
+		
+		$form['content']['accordion']['datosEmergencia']['collapseThree']['seccion1'] = create_container('col-sm-4');
+		
+		$form['content']['accordion']['datosEmergencia']['collapseThree']['seccion1']['NombreContactoEmergencia'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->NombreContactoEmergencia,
+			'#title' =>'Nombre Contacto Emergencia',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['datosEmergencia']['collapseThree']['seccion1']['FonoFijoEmergencia'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->FonoFijoEmergencia,
+			'#title' =>'Fono Fijo Emergencia',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['datosEmergencia']['collapseThree']['seccion1']['FonoFijoEmergencia'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->FonoFijoEmergencia,
+			'#title' =>'Fono Fijo Emergencia',
+			'#disabled' => TRUE,			
+		);
+		
+		//SECCION 4
+		
+		$form['content']['accordion']['otrosAntecedentes'] = create_container('panel panel-default');
+												 
+		$form['content']['accordion']['otrosAntecedentes']['headingFour'] = array(
+													'#type' => 'container',
+													'#attributes' => array(
+														'class'=> array('panel-heading'),
+														'aria-multiselectable'=> array('true'),
+														'role'=> array('tab')
+													)		
+												);
+		$form['content']['accordion']['otrosAntecedentes']['headingFour']['titulo']=array('#markup' => '<h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#edit-collapsefour" aria-expanded="true" aria-controls="collapsefour">Otros Antecedentes</a> </h4>');
+		
+		$form['content']['accordion']['otrosAntecedentes']['collapseFour']=  array(
+													'#type' => 'container',
+													'#attributes' => array(
+														'class'=> array('panel-body panel-collapse collapse'),
+														'aria-labelledby'=> array('edit-headingfour'),
+														'role'=> array('tabpanel')
+													)		
+												);
+												
+		$form['content']['accordion']['otrosAntecedentes']['collapseFour']['seccion1'] = create_container('col-sm-4 form-wrapper form-group');
+		
+		$form['content']['accordion']['otrosAntecedentes']['collapseFour']['seccion1']['Altura'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->Altura,
+			'#title' =>'Altura (cm)',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['otrosAntecedentes']['collapseFour']['seccion1']['Peso'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->Peso,
+			'#title' =>'Peso (Kg)',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['otrosAntecedentes']['collapseFour']['seccion1']['TallaPantalon'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->TallaPantalon,
+			'#title' =>'Talla Pantalón',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['otrosAntecedentes']['collapseFour']['seccion1']['TallaCamisa'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->TallaCamisa,
+			'#title' =>'Talla Camisa',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['otrosAntecedentes']['collapseFour']['seccion1']['TallaZapatos'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->TallaZapatos,
+			'#title' =>'Número Calzado',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['otrosAntecedentes']['collapseFour']['seccion1']['NombreGrupoSanguineo'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->NombreGrupoSanguineo,
+			'#title' =>'Grupo Sanguíneo',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['otrosAntecedentes']['collapseFour']['seccion1']['Fumador'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->Fumador,
+			'#title' =>'Fumador',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['otrosAntecedentes']['collapseFour']['seccion1']['GrupoEtnico'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->GrupoEtnico,
+			'#title' =>'Grupo Étnico',
+			'#disabled' => TRUE,			
+		);
+		
+		
+		
+		$form['content']['accordion']['otrosAntecedentes']['collapseFour']['seccion1']['NombreGrupoEtnico'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->NombreGrupoEtnico,
+			'#title' =>'Nombre Grupo Étnico',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['otrosAntecedentes']['collapseFour']['seccion2'] = create_container('col-sm-4 form-wrapper form-group');
+		
+		$form['content']['accordion']['otrosAntecedentes']['collapseFour']['seccion2']['ClaseLicenciaConducir'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->ClaseLicenciaConducir,
+			'#title' =>'Licencia Conducir',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['otrosAntecedentes']['collapseFour']['seccion2']['NumeroLicenciaConducir'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->NumeroLicenciaConducir,
+			'#title' =>'N° Licencia de Conducir',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['otrosAntecedentes']['collapseFour']['seccion2']['FechaVencimientoLicenciaConducir'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->FechaVencimientoLicenciaConducir,
+			'#title' =>'Fecha Vencimiento Licencia',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['otrosAntecedentes']['collapseFour']['seccion2']['NumeroSeguridadSocial'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->NumeroSeguridadSocial,
+			'#title' =>'N° Seguridad Social',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['otrosAntecedentes']['collapseFour']['seccion2']['NumeroPasaporte'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->NumeroPasaporte,
+			'#title' =>'N° de Pasaporte',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['otrosAntecedentes']['collapseFour']['seccion2']['NombreIsapre'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->NombreIsapre,
+			'#title' =>'Isapre/FONASA',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['otrosAntecedentes']['collapseFour']['seccion2']['NombreAfp'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->NombreAfp,
+			'#title' =>'Afp',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['otrosAntecedentes']['collapseFour']['seccion2']['MovilidadGeografica'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->MovilidadGeografica,
+			'#title' =>'Movilidad Geográfica',
+			'#disabled' => TRUE,			
+		);
+		
+		$form['content']['accordion']['otrosAntecedentes']['collapseFour']['seccion2']['SituacionMilitar'] = array(
+			'#type' => 'textfield',
+			'#value' => $entry->SituacionMilitar,
+			'#title' =>'Situación Militar',
+			'#disabled' => TRUE,			
+		);
+	}
+	
+	return $form;		
+}
+/*
+	
+	<IdPersona>190</IdPersona>
+      <Id>190</Id>
+      <IdentificacionUnica>13782014</IdentificacionUnica>
+      <Dv>5</Dv>
+      <ApellidoPaterno>ABARZUA</ApellidoPaterno>
+      <ApellidoMaterno>VASQUEZ</ApellidoMaterno>
+      <Nombres>VIVIANA ELIZABETH</Nombres>
+      <Email>spacheco@dl.cl</Email>
+      <FonoLaboral/>
+      <CelularLaboral/>
+      <ComunaLaboral>Sin Información</ComunaLaboral>
+      <RegionLaboral>Sin Información</RegionLaboral>
+      <FechaNacimiento>1980-01-06-03:00</FechaNacimiento>
+      <FranquiciaSence>100</FranquiciaSence>
+      <EscolaridadSence>Sin Información</EscolaridadSence>
+      <NivelOcupacionalSence>Sin Informacion</NivelOcupacionalSence>
+      <Genero>Sin Información</Genero>
+      <PlanDesarrollo>Sin Plan</PlanDesarrollo>
+      <Vigente>true</Vigente>
+      <IdUnidadOrganizacional>0</IdUnidadOrganizacional>
+      <IdCargo>0</IdCargo>
+      <NombreCargo>Sin Información</NombreCargo>
+      <IdSociedad>4164</IdSociedad>
+      <IdUnidadNegocio>0</IdUnidadNegocio>
+*/
+?>

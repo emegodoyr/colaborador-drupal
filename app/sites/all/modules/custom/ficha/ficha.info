@@ -1,0 +1,5 @@
+;$Id$
+name = Ficha
+description = Ficha del colaborador
+package = DL
+core = "7.x"
