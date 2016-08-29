@@ -1,0 +1,5 @@
+<?php
+function accordion_theme(){
+    $response = new Accordion();
+    return $response->getTheme();
+}
