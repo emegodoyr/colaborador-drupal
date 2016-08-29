@@ -34,7 +34,6 @@ function esb_connector_execute_service($service, $operation, $inputparameters) {
 //            $xml =$client->__soapCall($operation, array($inputparameters));
 
 //        $client->$operation($inputparameters);
-
         $client->__soapCall($operation,array($inputparameters));
 //            $resp= simplexml_load_string($xml->);
         $resp = $client->__getLastResponse();
