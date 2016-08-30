@@ -6,7 +6,9 @@ class Eventos {
         $utils = new Utils();
         $idPersona = $utils->getIdPersona();
         $idSociedad = $utils->getIdSociedad();
-
+        if($idPersona == 'null'){
+            return '<h3>No tienes eventos cargados</h3>';
+        }
         $parametros = array(
             'IdSociedad' => $idSociedad,
             'IdPersona' => $idPersona,

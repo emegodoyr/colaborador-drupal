@@ -3,16 +3,16 @@
 class Utils {
 
     function getIdPersona(){
-//        global $user;
+        global $user;
         $idSociedad = $this->getIdSociedad();
-        $userName  = '8044145-2';
+        $userName  = $user->name;
         $parametros = array(
             'idsociedad' => $idSociedad,
             'nombre' => $userName,
         );
 
         $xml = esb_connector_execute_service('DetallePersona', 'getDetallePersona', $parametros);
-
+//        print count($xml);
         $id = "null";
         foreach ($xml->Entries->Entry as $entry){
             $id = $entry->Id;
