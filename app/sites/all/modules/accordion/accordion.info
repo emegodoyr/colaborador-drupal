@@ -1,0 +1,7 @@
+;$Id$
+name = Accordion
+description = Accordion
+package = DL
+core = "7.x"
+files[] = accordion.theme.inc
+files[] = accordion.theme.tpl.php

@@ -3,3 +3,5 @@ name = Ficha
 description = Ficha del colaborador
 package = DL
 core = "7.x"
+files[] = ficha.theme.inc
+files[] = ficha.theme.tpl.php
