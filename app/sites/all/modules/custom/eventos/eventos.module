@@ -32,20 +32,20 @@ function eventos_contenidosEvento() {
 
     drupal_add_js('function closeCurso() {curso.hide();location.reload(true);}','inline');
     $idEvento = $_GET['idEvento'];
-    $idPersona = '6';
+    $idPersona = $_GET['idPersona'];
     $parametros = array(
         'IdEvento' => $idEvento,
         'IdPersona' => $idPersona,
     );
 
     $xml = esb_connector_execute_service('D_Eventos', 'getContenidosNomina', $parametros);
-    $attributes['datatable_options'] = array(
-        'responsive'=>TRUE,
-        'aoColumnsDef' => array('bSortable'=>FALSE,'aTargets'=>array('no-sort')),
-        'bFilter'   => FALSE,
-        'language' => array('url'=>'/sites/all/modules/datatables/dataTables/media/js/dataTables.spanish.js',),
-        'aaSorting' =>array(),
-    );
+//    $attributes['datatable_options'] = array(
+//        'responsive'=>TRUE,
+//        'aoColumnsDef' => array('bSortable'=>FALSE,'aTargets'=>array('no-sort')),
+//        'bFilter'   => FALSE,
+//        'language' => array('url'=>'/sites/all/modules/datatables/dataTables/media/js/dataTables.spanish.js',),
+//        'aaSorting' =>array(),
+//    );
     // Define table columns
     $header = array(
         array
@@ -121,12 +121,11 @@ function eventos_contenidosEvento() {
     }
 
     $variables = array(
-        'attributes' => $attributes,
         'header' => $header,
         'rows' => $rows,
     );
 
-    $output = theme('datatable', $variables);
+    $output = theme('table', $variables);
 
     $form['modal'] = array(
         '#type' => 'container',
