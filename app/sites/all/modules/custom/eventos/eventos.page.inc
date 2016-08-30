@@ -15,7 +15,6 @@ class Eventos {
         $xml = esb_connector_execute_service('D_Eventos', 'ObtenerEventosPorIdPersona', $parametros);
 
         $rows = array();
-        $nameHeader = array();
         foreach ($xml->Entries->Entry as $entry) {
             $row = array();
 
@@ -27,23 +26,10 @@ class Eventos {
             }
 
             array_push($rows, $row);
-
-            if(count($nameHeader) == 0){
-                foreach (get_object_vars($entry) as $llave => $valor){
-                    array_push($nameHeader, $llave);
-                }
-
-            }
-
         }
 
-        // Or, render using a theme function.
-        $variables = array(
-            'header' => $utils->getHeader($nameHeader),
-            'rows' => $rows,
-        );
 
-        $datatable = theme('table', $variables);
+        $datatable = theme('cards', array('info' => $rows, 'idPersona' => $idPersona,'absolut'=> url(drupal_get_path("module", "cards"), array("absolute" => true))));
 
 
         return $datatable;

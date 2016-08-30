@@ -1,0 +1,6 @@
+ <?php
+
+     function cards_theme(){
+        $response = new Card();
+         return $response->getCards();
+     }

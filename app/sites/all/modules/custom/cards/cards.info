@@ -1,0 +1,8 @@
+;$Id$
+name = Cards
+description = Módulo de vista tarjetas
+package = DL
+core = "7.x"
+files[] = cards.theme.inc
+files[] = cards.theme.tpl.php
+files[] = img/back-card-default.png
