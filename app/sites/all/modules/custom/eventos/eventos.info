@@ -3,3 +3,6 @@ name = Eventos
 description = Módulo de Eventos
 package = DL
 core = "7.x"
+files[] = eventos.utils.inc
+files[] = eventos.page.inc
+files[] = eventos.hooks.inc
