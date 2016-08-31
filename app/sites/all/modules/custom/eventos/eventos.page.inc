@@ -3,12 +3,21 @@
 class Eventos {
 
     function pageResponse(){
+        global $user;
+
+        if($user->name == 'admin'){
+            return '<h3>Estas autenticado como administrador, lo mas probable es que no poseas eventos</h3>';
+        }
+
         $utils = new Utils();
         $idPersona = $utils->getIdPersona();
         $idSociedad = $utils->getIdSociedad();
         if($idPersona == 'null'){
             return '<h3>No tienes eventos cargados</h3>';
         }
+
+
+
         $parametros = array(
             'IdSociedad' => $idSociedad,
             'IdPersona' => $idPersona,
