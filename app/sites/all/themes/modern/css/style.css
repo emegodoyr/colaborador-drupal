@@ -793,67 +793,65 @@ dt, dd {
     background-position: 0; }
 
 /*Blue button*/
-.blue #main_header {
-  background: url(../images/9.png) no-repeat 50% 0; }
 .blue a {
-  color: #00b6c5; }
+  color: #0079c8; }
   .blue a:hover {
-    color: #23e9fa; }
+    color: #0079c8; }
 .blue .color-green {
-  color: #00b6c5; }
+  color: #0079c8; }
 .blue .top_block i {
-  background: #00b6c5; }
+  background: #0079c8; }
 .blue #main-menu li:hover a,
 .blue #main-menu li a:hover,
 .blue #main-menu li a.active {
-  background: url(../images/menu_hover.png) #00b6c5; }
+  background: url(../images/menu_hover.png) #0079c8; }
 .blue #main-menu .expanded li a {
   background: rgba(0, 0, 0, 0.8); }
 .blue footer.main a {
-  color: #00b6c5; }
+  color: #0079c8; }
   .blue footer.main a:hover {
-    color: #23e9fa; }
+    color: #0079c8; }
 .blue.not-front .page_title_wrapper h1 {
-  color: #00b6c5; }
+  color: #0079c8; }
 .blue .view-portfolio .views-row:hover {
-  border-color: #00b6c5; }
+  border-color: #0079c8; }
 .blue .view-portfolio .views-row .views-field-view-node a:hover,
 .blue .view-portfolio .views-row .views-field-field-porfolio-image-1 a:hover {
-  background-color: #00b6c5; }
+  background-color: #0079c8; }
 .blue.page-gallery .view .views-field-field-gallery-image-1 a {
-  background: #00b6c5 url(../images/link.png) center -25px no-repeat; }
+  background: #0079c8 url(../images/link.png) center -25px no-repeat; }
 .blue .field-name-field-blog-tags .field-item a:hover,
 .blue .show-grid:hover {
-  background: #00b6c5; }
+  background: #0079c8; }
 .blue blockquote, .blue .view-our-team .views-field-field-profile-image:hover img {
-  border-color: #00b6c5; }
+  border-color: #0079c8; }
 .blue aside .menu a:hover, .blue aside .menu .active-trail a {
-  background-color: #00b6c5; }
+  background-color: #0079c8; }
 .blue input[type="file"], .blue input[type="image"], .blue input[type="submit"], .blue input[type="reset"],
 .blue input[type="button"], .blue input[type="radio"], .blue input[type="checkbox"] {
-  background: #00b6c5; }
+  background: #0079c8; }
 .blue input[type="file"]:hover, .blue input[type="image"]:hover, .blue input[type="submit"]:hover,
 .blue input[type="reset"]:hover, .blue input[type="button"]:hover:hover, .blue input[type="radio"]:hover,
 .blue input[type="checkbox"]:hover {
-  background: #23e9fa; }
+  background: #0079c8; }
 .blue .tbl-pricing .column.column-recommended .tbl-header {
-  background: #00b6c5; }
+  background: #0079c8; }
 .blue .tbl-pricing .column.column-recommended {
-  border-top-color: #00b6c5; }
+  border-top-color: #0079c8; }
 .blue .default_btn, .blue #block-search-form .form-submit {
-  background: #87e0fd;
+  background: #0079c8;
   /* Old browsers */
-  background: -moz-linear-gradient(top, #87e0fd 0%, #53cbf1 40%, #05abe0 100%);
+  background: -moz-linear-gradient(top, #0079c8 0%, #0079c8 40%, #0079c8 100%);
   /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #87e0fd), color-stop(40%, #53cbf1), color-stop(100%, #05abe0));
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #0079c8), color-stop(40%, #0079c8), color-stop(100%, #0079c8));
   /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top, #87e0fd 0%, #53cbf1 40%, #05abe0 100%);
+  background: -webkit-linear-gradient(top, #0079c8 0%, #0079c8 40%, #0079c8 100%);
   /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top, #87e0fd 0%, #53cbf1 40%, #05abe0 100%);
+  background: -o-linear-gradient(top, #0079c8 0%, #0079c8 40%, #0079c8 100%);
   /* Opera 11.10+ */
-  background: -ms-linear-gradient(top, #87e0fd 0%, #53cbf1 40%, #05abe0 100%);
+  background: -ms-linear-gradient(top, #0079c8 0%, #0079c8 40%, #0079c8 100%);
   /* IE10+ */
-  background: linear-gradient(to bottom, #87e0fd 0%, #53cbf1 40%, #05abe0 100%);
+  background: linear-gradient(to bottom, #0079c8 0%, #0079c8 40%, #0079c8 100%);
   /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#87e0fd', endColorstr='#05abe0',GradientType=0 );
   /* IE6-9 */
@@ -1246,7 +1244,7 @@ aside .menu {
 
 /*Banner*/
 #main_header {
-  background: url(../images/3.png) no-repeat 50% 0;
+  background: url(../images/headerCustom.jpg) no-repeat 50% 0;
   color: #fff;
   padding: 15px 0 0 0;
   position: relative;
