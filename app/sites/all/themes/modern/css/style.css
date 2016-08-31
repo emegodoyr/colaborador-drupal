@@ -788,50 +788,50 @@ dt, dd {
 .blue #main_header {
   background: url(../images/9.png) no-repeat 50% 0; }
 .blue a {
-  color: #00B6C5; }
+  color: #0079C8; }
   .blue a:hover {
     color: #23E9FA; }
 .blue .color-green {
-  color: #00B6C5; }
+  color: #0079C8; }
 .blue .top_block i {
-  background: #00B6C5; }
+  background: #0079C8; }
 .blue #main-menu li:hover a,
 .blue #main-menu li a:hover,
 .blue #main-menu li a.active {
-  background: url(../images/menu_hover.png) #00B6C5; }
+  background: url(../images/menu_hover.png) #0079C8; }
 .blue #main-menu .expanded li a {
   background: rgba(0, 0, 0, 0.8); }
 .blue footer.main a {
-  color: #00B6C5; }
+  color: #0079C8; }
   .blue footer.main a:hover {
     color: #23E9FA; }
 .blue.not-front .page_title_wrapper h1 {
-  color: #00B6C5; }
+  color: #0079C8; }
 .blue .view-portfolio .views-row:hover {
-  border-color: #00B6C5; }
+  border-color: #0079C8; }
 .blue .view-portfolio .views-row .views-field-view-node a:hover,
 .blue .view-portfolio .views-row .views-field-field-porfolio-image-1 a:hover {
-  background-color: #00B6C5; }
+  background-color: #0079C8; }
 .blue.page-gallery .view .views-field-field-gallery-image-1 a {
-  background: #00B6C5 url(../images/link.png) center -25px no-repeat; }
+  background: #0079C8 url(../images/link.png) center -25px no-repeat; }
 .blue .field-name-field-blog-tags .field-item a:hover,
 .blue .show-grid:hover {
-  background: #00B6C5; }
+  background: #0079C8; }
 .blue blockquote, .blue .view-our-team .views-field-field-profile-image:hover img {
-  border-color: #00B6C5; }
+  border-color: #0079C8; }
 .blue aside .menu a:hover, .blue aside .menu .active-trail a {
-  background-color: #00B6C5; }
+  background-color: #0079C8; }
 .blue input[type="file"], .blue input[type="image"], .blue input[type="submit"], .blue input[type="reset"],
 .blue input[type="button"], .blue input[type="radio"], .blue input[type="checkbox"] {
-  background: #00B6C5; }
+  background: #0079C8; }
 .blue input[type="file"]:hover, .blue input[type="image"]:hover, .blue input[type="submit"]:hover,
 .blue input[type="reset"]:hover, .blue input[type="button"]:hover:hover, .blue input[type="radio"]:hover,
 .blue input[type="checkbox"]:hover {
   background: #23E9FA; }
 .blue .tbl-pricing .column.column-recommended .tbl-header {
-  background: #00B6C5; }
+  background: #0079C8; }
 .blue .tbl-pricing .column.column-recommended {
-  border-top-color: #00B6C5; }
+  border-top-color: #0079C8; }
 .blue .default_btn, .blue #block-search-form .form-submit {
   background: #87e0fd;
   /* Old browsers */
