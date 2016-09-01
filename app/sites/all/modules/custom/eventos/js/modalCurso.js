@@ -15,6 +15,13 @@
         $("#frameCurso").attr("src", URL);
         $("#modalCursoPlayer").modal({backdrop: 'static'});
         $("#modalCursoPlayer").modal("show");
+        $('#modalCursoPlayer').css({
+            overflow    : 'hidden',
+            left        : '400px',
+            width       : '88%',
+            height      : '95%',
+            top         : '30px',
+        });
         $(".cursoModal").css({
             zIndex: '9999',
         });
