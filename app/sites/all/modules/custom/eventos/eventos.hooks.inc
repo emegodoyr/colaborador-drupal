@@ -18,7 +18,9 @@ class Hooks {
             'title' => '',
             'page callback' => 'eventos_contenidosEvento',
             'access arguments' => array('access content'),
-            'type' => MENU_CALLBACK
+            'access callback' => 'user_is_logged_in',
+            'type' => MENU_CALLBACK,
+            'menu_name' => 'user-menu'
         );
         $items['cerrarCurso.htm'] = array(
             'title' => 'cc',

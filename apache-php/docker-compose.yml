@@ -2,7 +2,7 @@
 version: '2'
 services:
   web:
-    hostname: 'colaborador'
+    hostname: 'drupal'
     image: webdevops/php-apache:ubuntu-16.04
     ports:
       - "80:80"
@@ -16,7 +16,7 @@ services:
   # Mysql server
 
   database:
-      hostname: 'colaborador-db'
+      hostname: 'database'
       image: mysql:latest
       volumes:
          - ./.model:/var/lib/mysql
