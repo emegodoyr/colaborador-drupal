@@ -1,10 +1,10 @@
 
 <?php
 
-echo '<div class="row icons">';
+
 
 echo '
-<section style="border:1px solid lightgrey;padding-top:0; margin-bottom: 15px; border-radius: 5px 5px 5px 5px;">
+<div style="border:1px solid lightgrey;padding-top:0; margin-bottom: 15px; border-radius: 5px 5px 5px 5px;">
 <a href="#" data-toggle="modal" data-target="#myModal"><span><i class="fa fa-question-circle"></i> Simbología</span></a>
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 			  <div class="modal-dialog" role="document">
@@ -100,26 +100,28 @@ echo '
 				   </div>
 			  </div>
 			</div>
-</section> 
+</div> 
 ';
 
+echo '<div class="row icons">';
+
 foreach($info as $entry) {
-    if($entry[12] > 0) {
-        $haveContent = true;
-        echo '<a href="'.$base.'/eventos/contenidosEvento?idEvento='.$entry[0].'&idPersona='.$idPersona.'">';
-    } else {
-        $haveContent = false;
-        echo '<a href="#">';
-    }
-    if($entry[6] != "") {
-        $image = $entry[6];
+//    if($entry[12] > 0) {
+//        $haveContent = true;
+//        echo '<a href="'.$base.'/eventos/contenidosEvento?idEvento='.$entry[0].'&idPersona='.$idPersona.'">';
+//    } else {
+//        $haveContent = false;
+//        echo '<a href="#">';
+//    }
+//    if($entry[6] != "") {
+//        $image = $entry[6];
+//
+//    } else {
+//       $image = $absolut."/img/back-box-default.png";
+//    }
 
-    } else {
-       $image = $absolut."/img/back-box-default.png";
-    }
 
-
-    switch ($entry[7]) {
+    switch ($entry[4]) {
         case "No Iniciado":
             $estado = '<i style="color:grey;font-size:15px; vertical-align:center;" class="icon-circle"></i>';
             break;
@@ -130,16 +132,16 @@ foreach($info as $entry) {
             echo $estado = '<i style="color:blue;font-size:15px; vertical-align:center;" class="icon-circle"></i>';
             break;
         default:
-            echo "Your favorite color is neither red, blue, nor green!";
+            echo $estado = '';
     }
-    switch ($entry[8]) {
-        case "N/D":
-            $resultado = '<i style="color:black;font-size:15px; vertical-align:center;" >N/D</i>';
-            break;
-        default:
-            $resultado = '<i style="color:black;font-size:15px; vertical-align:center;" >'.$entry[8].'%</i>';
-    }
-    switch ($entry[9]) {
+//    switch ($entry[8]) {
+//        case "N/D":
+//            $resultado = '<i style="color:black;font-size:15px; vertical-align:center;" >N/D</i>';
+//            break;
+//        default:
+//            $resultado = '<i style="color:black;font-size:15px; vertical-align:center;" >'.$entry[8].'%</i>';
+//    }
+    switch ($entry[6]) {
         case "N/D":
             $situacionFinal = '<i style="color:black;font-size:15px; vertical-align:center;" >N/D</i>';
             break;
@@ -150,17 +152,17 @@ foreach($info as $entry) {
             $situacionFinal =  '<i style="color:green;font-size:15px; vertical-align:center;" class="icon-circle"></i>';
             break;
     }
-    switch ($entry[10]) {
-        case "N/D":
-            $modalidad = '<i style="color:black;font-size:15px; vertical-align:center;" >N/D</i>';
-            break;
-        case "Reprobado":
-            $modalidad =  '<i style="color:red;font-size:15px; vertical-align:center;" class="icon-circle"></i>';
-            break;
-        case "Aprobado":
-            $modalidad =  '<i style="color:green;font-size:15px; vertical-align:center;" class="icon-circle"></i>';
-            break;
-    }
+//    switch ($entry[10]) {
+//        case "N/D":
+//            $modalidad = '<i style="color:black;font-size:15px; vertical-align:center;" >N/D</i>';
+//            break;
+//        case "Reprobado":
+//            $modalidad =  '<i style="color:red;font-size:15px; vertical-align:center;" class="icon-circle"></i>';
+//            break;
+//        case "Aprobado":
+//            $modalidad =  '<i style="color:green;font-size:15px; vertical-align:center;" class="icon-circle"></i>';
+//            break;
+//    }
 
 
 
@@ -168,17 +170,16 @@ foreach($info as $entry) {
 
 <section class="span2" style="border:1px solid lightgrey;padding-top:0; margin-bottom: 15px; border-radius: 5px 5px 5px 5px;">
 
-    <header  title="'.$entry[1].'" style="background-color: darkgray; width: auto; padding:0;border-radius: 5px 5px 0px 0px;text-align:center; margin:0;">
-        <label style=" color: whitesmoke ;height: 30px; margin-left: 5px; padding:5px; margin-right: 5px;overflow:hidden; white-space:nowrap; text-overflow: ellipsis";>'.$entry[1].'</label>
+    <header  title="'.$entry[0].'" style="background-color: darkgray; width: auto; padding:0;border-radius: 5px 5px 0px 0px;text-align:center; margin:0;">
+        <label style=" color: whitesmoke ;height: 30px; margin-left: 5px; padding:5px; margin-right: 5px;overflow:hidden; white-space:nowrap; text-overflow: ellipsis";>'.$entry[0]. '</label>
     </header>
 
-    <article style="text-align:center;background-image:url('.$image.')">
+    <article style="text-align:center;background-image:url('.$absolut.'/img/back-box-default.png)">
         
-         <label style="height: 80px;padding:0;margin:0;">';
+         <label style="height: 80px;padding:0;margin:0;text-align:center">';
        
-            if($haveContent) {
-               echo '<i style = "color:mediumseagreen;font-size:80px;" class="icon-play-circle"></i>';
-            }
+
+               echo $entry[8];
 	    echo '</label> 
         
      
@@ -186,13 +187,12 @@ foreach($info as $entry) {
 
     <footer style="border-top: 1px solid lightgrey; height: 20px;">
         '.$estado.'
-        '.$resultado.'
         '.$situacionFinal.'
         <i style="color:dodgerblue;float:right;font-size:15px; vertical-align:center;" class="icon-info-sign"></i>
         
     </footer>
     
-</section></a>';
+</section>';
 
 };
 

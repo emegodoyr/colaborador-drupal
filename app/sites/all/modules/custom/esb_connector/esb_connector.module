@@ -27,7 +27,7 @@ function esb_connector_execute_service($service, $operation, $inputparameters) {
         }
 
     } catch (SoapFault $exception) {
-        $respuesta = 'soap fault occured: ' . $exception->getMessage() . '<br/>';
+        return false;
     }
 
     return $respuesta;

@@ -1,0 +1,6 @@
+ <?php
+
+     function box_theme(){
+        $response = new Box();
+         return $response->getBoxs();
+     }

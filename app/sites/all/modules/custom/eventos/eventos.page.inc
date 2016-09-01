@@ -26,6 +26,11 @@ class Eventos {
         $xml = esb_connector_execute_service('D_Eventos', 'ObtenerEventosPorIdPersona', $parametros);
 
         $rows = array();
+
+        if(!$xml){
+            return '<h3>no tienes eventos</h3>';
+        }
+
         foreach ($xml->Entries->Entry as $entry) {
             $row = array();
 
@@ -39,13 +44,16 @@ class Eventos {
             array_push($rows, $row);
         }
 
+        $variables = array('info'       => $rows,
+                           'idPersona'  => $idPersona,
+                           'absolut'    => url(drupal_get_path("module", "cards"), array("absolute" => true)),
+                           'base'       => $GLOBALS['base_url']);
 
-        $datatable = theme('cards', array('info' => $rows, 'idPersona' => $idPersona,
-                                          'absolut'=> url(drupal_get_path("module", "cards"), array("absolute" => true)),
-                                          'base'=> $GLOBALS['base_url']));
+
+        $cards = theme('cards', $variables);
 
 
-        return $datatable;
+        return $cards;
     }
 
 }

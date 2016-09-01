@@ -1,0 +1,8 @@
+;$Id$
+name = Box
+description = Módulo de vista box content
+package = DL
+core = "7.x"
+files[] = box.theme.inc
+files[] = box.theme.tpl.php
+files[] = img/back-box-default.png

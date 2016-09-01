@@ -17,67 +17,12 @@ class EventoContent {
         );
 
         $xml = esb_connector_execute_service('D_Eventos', 'getContenidosNomina', $parametros);
-//    $attributes['datatable_options'] = array(
-//        'responsive'=>TRUE,
-//        'aoColumnsDef' => array('bSortable'=>FALSE,'aTargets'=>array('no-sort')),
-//        'bFilter'   => FALSE,
-//        'language' => array('url'=>'/sites/all/modules/datatables/dataTables/media/js/dataTables.spanish.js',),
-//        'aaSorting' =>array(),
-//    );
-        // Define table columns
-        $header = array(
-            array
-            (
-                'data' => t('Contenido'),
 
-            ),
-            array
-            (
-                'data' => t('Tipo'),
-
-            ),
-            array
-            (
-                'data' => t('Ponderación'),
-
-            ),
-            array
-            (
-                'data' => t('Avance'),
-
-            ),
-            array
-            (
-                'data' => t('Estado'),
-
-            ),
-            array
-            (
-                'data' => t('Resultado'),
-
-            ),
-            array
-            (
-                'data' => t('Situación Final'),
-
-            ),
-            array
-            (
-                'data' => t('Intentos'),
-
-            ),
-            array
-            (
-                'data' => t(''),
-
-            ),
-
-
-        );
-
-
-        // Table data.
         $rows = array();
+
+        if(!$xml){
+            return '<h3>no tienes contenidos para este evento</h3>';
+        }
 
         foreach ($xml->Entries->Entry as $entry) {
 
@@ -91,19 +36,19 @@ class EventoContent {
                 $entry->Puntaje,
                 getSituacionFinal($entry->IdSituacion),
                 $entry->Intentos.' de '.$entry->MaximoIntentos,
-                '<button type="button" class="btn btn-primary btn-sm" onclick="curso.show(\''.$entry->LinkScorm.'\');">Iniciar</button>'
+                '<button type="button" style="margin-top: 25px;" class="btn btn-primary btn-sm" onclick="curso.show(\''.$entry->LinkScorm.'\');">Iniciar</button>'
             );
 
             array_push($rows, $row);
         }
 
 
-        $variables = array(
-            'header' => $header,
-            'rows' => $rows,
-        );
+        $variables = array('info'       => $rows,
+                           'idPersona'  => $idPersona,
+                           'absolut'    => url($GLOBALS['base_url'].'/'.drupal_get_path("module", "box"), array("absolute" => true)),
+                           'base'       => $GLOBALS['base_url']);
 
-        $output = theme('table', $variables);
+        $output = theme('box', $variables);
 
         $form['modal'] = array(
             '#type' => 'container',
