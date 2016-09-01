@@ -40,7 +40,9 @@ class Eventos {
         }
 
 
-        $datatable = theme('cards', array('info' => $rows, 'idPersona' => $idPersona,'absolut'=> url(drupal_get_path("module", "cards"), array("absolute" => true))));
+        $datatable = theme('cards', array('info' => $rows, 'idPersona' => $idPersona,
+                                          'absolut'=> url(drupal_get_path("module", "cards"), array("absolute" => true)),
+                                          'base'=> $GLOBALS['base_url']));
 
 
         return $datatable;

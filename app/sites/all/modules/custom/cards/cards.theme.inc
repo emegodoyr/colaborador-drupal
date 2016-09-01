@@ -5,7 +5,7 @@
         function getCards(){
             return array(
                 'cards' => array(
-                    'vars' => array('info' => NULL, 'idPersona' => NULL ,'absolut' => NULL),
+                    'vars' => array('info' => NULL, 'idPersona' => NULL ,'absolut' => NULL, 'base' => NULL),
                     'template' => 'cards.theme',
                 ),
             );

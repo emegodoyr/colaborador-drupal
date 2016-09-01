@@ -106,7 +106,7 @@ echo '
 foreach($info as $entry) {
     if($entry[12] > 0) {
         $haveContent = true;
-        echo '<a href="/eventos/contenidosEvento?idEvento='.$entry[0].'&idPersona='.$idPersona.'">';
+        echo '<a href="'.$base.'/eventos/contenidosEvento?idEvento='.$entry[0].'&idPersona='.$idPersona.'">';
     } else {
         $haveContent = false;
         echo '<a href="#">';
