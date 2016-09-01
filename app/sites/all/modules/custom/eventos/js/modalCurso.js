@@ -17,10 +17,10 @@
         $("#modalCursoPlayer").modal("show");
         $('#modalCursoPlayer').css({
             overflow    : 'hidden',
-            left        : '400px',
-            width       : '88%',
-            height      : '95%',
-            top         : '30px',
+            left        : '280px',
+            width       : '100%',
+            height      : '100%',
+            top         : '0',
         });
         $(".cursoModal").css({
             zIndex: '9999',
