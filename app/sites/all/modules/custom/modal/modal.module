@@ -1,0 +1,11 @@
+<?php
+
+
+/**
+ * Implements hook_theme().
+ */
+function modal_theme($existing, $type, $theme, $path)
+{
+    $response = new Modal();
+    return $response->getModal();
+}

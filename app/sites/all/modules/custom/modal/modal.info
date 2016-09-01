@@ -1,0 +1,7 @@
+;$Id$
+name = Modal
+description = Módulo de vista modal view
+package = DL
+core = "7.x"
+files[] = modal.theme.inc
+files[] = modal.theme.tpl.php
