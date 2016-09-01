@@ -11,6 +11,9 @@
     };
 
     cursoModal.prototype.show = function(URL) {
+        $('body').css({
+            overflow: 'hidden',
+        });
         $(".modal-header").hide();
         $("#frameCurso").attr("src", URL);
         $("#frameCurso").css({
@@ -40,7 +43,9 @@
 
 
 cursoModal.prototype.hide = function(){
-
+    $('body').css({
+        overflow: 'visible',
+    });
     $(".cursoModal").css({
         zIndex: '-9999',
     });
