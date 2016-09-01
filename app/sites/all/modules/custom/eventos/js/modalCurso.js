@@ -13,6 +13,9 @@
     cursoModal.prototype.show = function(URL) {
         $(".modal-header").hide();
         $("#frameCurso").attr("src", URL);
+        $("#frameCurso").css({
+            height: '1000px',
+        });
         $("#modalCursoPlayer").modal({backdrop: 'static'});
         $("#modalCursoPlayer").modal("show");
         $('#modalCursoPlayer').css({
@@ -30,6 +33,7 @@
     cursoModal.prototype.showUrl = function (URL) {
         $(".modal-header").show();
         $("#frameCurso").attr("src", URL);
+
         $("#modalCursoPlayer").modal({backdrop: 'static'});
         $("#modalCursoPlayer").modal("show");
     };
